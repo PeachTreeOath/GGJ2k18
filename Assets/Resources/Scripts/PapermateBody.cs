@@ -64,8 +64,8 @@ public class PapermateBody : MonoBehaviour {
 
     private void Update()
     {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
+        float h = Input.GetAxis("J_LeftStickX");
+        float v = Input.GetAxis("J_LeftStickY");
 
         _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h * power, v * power));
 

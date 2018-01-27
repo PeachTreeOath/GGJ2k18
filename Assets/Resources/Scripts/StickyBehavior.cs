@@ -17,6 +17,6 @@ public class StickyBehavior : MonoBehaviour {
 
     public void ActivateRightSticky()
     {
-        o
+        
     }
 }
