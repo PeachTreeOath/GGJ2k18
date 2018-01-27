@@ -102,9 +102,10 @@ public class PapermateBody : MonoBehaviour
             }
         }
 
+        // use world points and set up for three points per joint minus the two dangling off the ends
         _lineRenderer.useWorldSpace = true;
-        _lineRenderer.positionCount = jointCount;
-        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());
+        _lineRenderer.positionCount = jointCount * 3 - 2;
+        UpdateLineRendererPositions();
 
         // set the middle point as the camera follower
         CameraPlayerController camera = FindObjectOfType<CameraPlayerController>();
@@ -133,16 +134,30 @@ public class PapermateBody : MonoBehaviour
         else if (Input.GetButtonUp("KeyGrabRight"))
             UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh, _rightGrabJoint);
 
-        for (int i = 0; i < jointCount; i++)
-        {
-            _lineRenderer.SetPosition(i, _joints[i].transform.position);
-        }
+        UpdateLineRendererPositions();
 
         // render the correct location for each label
         leftTextMesh.transform.position = _joints.First().transform.position + _offsetVector;
         rightTextMesh.transform.position = _joints.Last().transform.position + _offsetVector;
         leftTextMesh.transform.rotation = Quaternion.identity;
         rightTextMesh.transform.rotation = Quaternion.identity;
+    }
+
+    private void UpdateLineRendererPositions()
+    {
+        //temporary for setting up the final check in
+        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());
+
+        // // gets the vector locations of each joint
+        // List<Vector3> vecs = _joints.Select(j => j.transform.position)
+
+        // // Assumes 3 times as many points as joints, minus the two end points
+        // // Uses cubic interpolation
+        // for(int i = 0; i < jointCount; i++)
+        // {
+        //     _joints[i].transform.position
+        // }
+
     }
 
     /// <summary>
