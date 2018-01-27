@@ -29,6 +29,8 @@ public class PapermateBody : MonoBehaviour
     private int staticPhysicsLayer;
     private int grabbablePhysicsLayer;
 
+    private bool cheatModeEnabled = false;
+
     private DistanceJoint2D _leftGrabJoint;
     private DistanceJoint2D _rightGrabJoint;
 
@@ -146,6 +148,8 @@ public class PapermateBody : MonoBehaviour
             _rightGrabJoint = null;
         }
 
+        if (Input.GetButtonDown("CheatModeButton"))
+            toggleCheatMode();
         UpdateLineRendererPositions();
 
         // render the correct location for each label
@@ -155,29 +159,16 @@ public class PapermateBody : MonoBehaviour
         rightTextMesh.transform.rotation = Quaternion.identity;
     }
 
-    private void UpdateLineRendererPositions()
-    {
-        //temporary for setting up the final check in
-        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());
-
-        // // gets the vector locations of each joint
-        // List<Vector3> vecs = _joints.Select(j => j.transform.position)
-
-        // // Assumes 3 times as many points as joints, minus the two end points
-        // // Uses cubic interpolation
-        // for(int i = 0; i < jointCount; i++)
-        // {
-        //     _joints[i].transform.position
-        // }
-
-    }
-
     /// <summary>
     /// Check to see if any of the joints in the papermate are colliding with physical bodies
     /// </summary>
     /// <returns></returns>
     private bool IsPaperGrounded()
     {
+        if (cheatModeEnabled)
+        {
+            return true;
+        }
         foreach (GameObject jt in _joints)
         {
             CapsuleCollider2D[] cols2D = jt.GetComponents<CapsuleCollider2D>();
@@ -223,5 +214,48 @@ public class PapermateBody : MonoBehaviour
     {
         textMesh.color = standardTextColor;
         GameObject.Destroy(grabJoint);
+    }
+
+    private void toggleCheatMode()
+    {
+        cheatModeEnabled = !cheatModeEnabled;
+
+        if (cheatModeEnabled)
+        {
+            Debug.Log("Cheat mode enabled.");
+            foreach (GameObject joint in _joints)
+            {
+                Collider2D[] colliders = joint.GetComponents<Collider2D>();
+                foreach (Collider2D collider in colliders)
+                {
+                    collider.enabled = false;
+                }
+
+                Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
+                rb.gravityScale = 0;
+            }
+        }
+        else
+        {
+            Debug.Log("Cheat mode disabled.");
+            foreach (GameObject joint in _joints)
+            {
+                Collider2D[] colliders = joint.GetComponents<Collider2D>();
+                foreach (Collider2D collider in colliders)
+                {
+                    collider.enabled = true;
+
+                }
+
+                Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
+                rb.gravityScale = 1;
+            }
+        }
+    }
+
+    private void UpdateLineRendererPositions()
+    {
+        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());    
+
     }
 }
