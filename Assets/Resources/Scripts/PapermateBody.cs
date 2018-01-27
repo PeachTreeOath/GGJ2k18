@@ -11,7 +11,7 @@ public class PapermateBody : MonoBehaviour
     public int jointCount = 10;
     public int unitLength = 4;
     public float width = 0.2f;
-    public float power = 100f;
+    public float power = 350;
     public float airPower = 20f;
 
     public TextMesh leftTextMesh;
