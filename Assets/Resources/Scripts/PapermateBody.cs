@@ -190,13 +190,8 @@ public class PapermateBody : MonoBehaviour
             float vRatio = vert / distance;
             float vertMove = Mathf.Abs(vel.x) > glideVelocityMax && Mathf.Sign(vel.x) == Mathf.Sign(vRatio) ? 0f : Mathf.Sign(vRatio) * 100 * hRatio;
             Vector3 currentUpLift = new Vector3(vertMove, Mathf.Abs(vel.y * upwardLift * hRatio), 0f);
-            Debug.LogFormat("Applying up draft {0}", currentUpLift);
 
             // apply the upward lift to each point
-            //foreach (GameObject joint in _joints)
-            //{
-            //    joint.GetComponent<Rigidbody2D>().AddForce(currentUpLift);
-            //}
             _joints.First().GetComponent<Rigidbody2D>().AddForce(currentUpLift);
             _joints.Last().GetComponent<Rigidbody2D>().AddForce(currentUpLift);
         }
