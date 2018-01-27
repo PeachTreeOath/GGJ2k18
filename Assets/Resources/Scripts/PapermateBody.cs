@@ -104,7 +104,7 @@ public class PapermateBody : MonoBehaviour
 
         // use world points and set up for three points per joint minus the two dangling off the ends
         _lineRenderer.useWorldSpace = true;
-        _lineRenderer.positionCount = jointCount * 3 - 2;
+        _lineRenderer.positionCount = jointCount;
         UpdateLineRendererPositions();
 
         // set the middle point as the camera follower
