@@ -180,6 +180,13 @@ public class PapermateBody : MonoBehaviour
                 }
             }
         }
+
+        // if we are grabbing a grounded object we can also return true
+        if (_leftGrabJoint != null && _leftGrabJoint.connectedBody.gameObject.layer == staticPhysicsLayer)
+            return true;
+        if (_rightGrabJoint != null && _rightGrabJoint.connectedBody.gameObject.layer == staticPhysicsLayer)
+            return true;
+
         return false;
     }
 
