@@ -34,7 +34,8 @@ public class PapermateBody : MonoBehaviour {
         for (int i = 0; i < jointCount; i++)
         {
             GameObject joint = new GameObject("joint_" + i);
-            joint.transform.localPosition = new Vector3(0f + (segLen * i), 0f, 0f);
+            joint.transform.localPosition = new Vector3(transform.position.x , transform.position.y + (segLen * i), transform.position.z);
+            
             CircleCollider2D circleCollider = joint.AddComponent<CircleCollider2D>();
             circleCollider.radius = _radius;
 
@@ -43,6 +44,13 @@ public class PapermateBody : MonoBehaviour {
             {
                 DistanceJoint2D distJt = joint.AddComponent<DistanceJoint2D>();
                 distJt.connectedBody = prevBody;
+                HingeJoint2D hingeJoint = joint.AddComponent<HingeJoint2D>();
+                hingeJoint.useLimits = true;
+                hingeJoint.connectedBody = prevBody;
+                JointAngleLimits2D limits = new JointAngleLimits2D();
+                limits.max = 30f;
+                limits.min = 0;
+                hingeJoint.limits = limits;
             }
 
             _joints.Add(joint);
