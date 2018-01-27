@@ -29,6 +29,8 @@ public class PapermateBody : MonoBehaviour
     private int staticPhysicsLayer;
     private int grabbablePhysicsLayer;
 
+    private bool cheatModeEnabled = false;
+
     private DistanceJoint2D _leftGrabJoint;
     private DistanceJoint2D _rightGrabJoint;
 
@@ -134,6 +136,8 @@ public class PapermateBody : MonoBehaviour
         else if (Input.GetButtonUp("KeyGrabRight"))
             UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh, _rightGrabJoint);
 
+        if (Input.GetButtonDown("CheatModeButton"))
+            toggleCheatMode();
         UpdateLineRendererPositions();
 
         // render the correct location for each label
@@ -166,6 +170,10 @@ public class PapermateBody : MonoBehaviour
     /// <returns></returns>
     private bool IsPaperGrounded()
     {
+        if (cheatModeEnabled)
+        {
+            return true;
+        }
         foreach (GameObject jt in _joints)
         {
             CapsuleCollider2D[] cols2D = jt.GetComponents<CapsuleCollider2D>();
@@ -205,5 +213,42 @@ public class PapermateBody : MonoBehaviour
         rigidBody.constraints = RigidbodyConstraints2D.None;
         textMesh.color = standardTextColor;
         GameObject.Destroy(grabJoint);
+    }
+
+    private void toggleCheatMode()
+    {
+        cheatModeEnabled = !cheatModeEnabled;
+
+        if (cheatModeEnabled)
+        {
+            Debug.Log("Cheat mode enabled.");
+            foreach (GameObject joint in _joints)
+            {
+                Collider2D[] colliders = joint.GetComponents<Collider2D>();
+                foreach (Collider2D collider in colliders)
+                {
+                    collider.enabled = false;
+                }
+
+                Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
+                rb.gravityScale = 0;
+            }
+        }
+        else
+        {
+            Debug.Log("Cheat mode disabled.");
+            foreach (GameObject joint in _joints)
+            {
+                Collider2D[] colliders = joint.GetComponents<Collider2D>();
+                foreach (Collider2D collider in colliders)
+                {
+                    collider.enabled = true;
+
+                }
+
+                Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
+                rb.gravityScale = 1;
+            }
+        }
     }
 }
