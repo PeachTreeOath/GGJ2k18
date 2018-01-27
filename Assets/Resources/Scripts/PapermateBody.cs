@@ -147,12 +147,12 @@ public class PapermateBody : MonoBehaviour
     /// <returns></returns>
     private bool IsPaperGrounded()
     {
-        Collider2D[] results = new Collider2D[10];
         foreach (GameObject jt in _joints)
         {
-            CircleCollider2D col2D = jt.GetComponent<CircleCollider2D>();
-            if (col2D != null)
+            CircleCollider2D[] cols2D = jt.GetComponents<CircleCollider2D>();
+            foreach (CircleCollider2D col2D in cols2D)
             {
+                Collider2D[] results = new Collider2D[10];
                 col2D.OverlapCollider(_filter, results);
                 results = results.Where(c => c != null && c.gameObject.layer == _mask.value).ToArray();
                 if (results.Length > 0 && results[0] != null)
