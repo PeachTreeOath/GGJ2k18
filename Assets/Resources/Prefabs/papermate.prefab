@@ -229,6 +229,8 @@ MonoBehaviour:
   width: 0.2
   power: 300
   airPower: 20
+  upwardLift: 10
+  glideVelocityMax: 4
   leftTextMesh: {fileID: 102741098549986620}
   rightTextMesh: {fileID: 102191285351157160}
   labelOffset: 0.25
