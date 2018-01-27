@@ -8,7 +8,6 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class PapermateBody : MonoBehaviour
 {
-
     public int jointCount = 10;
     public int unitLength = 4;
     public float width = 0.2f;
@@ -26,10 +25,17 @@ public class PapermateBody : MonoBehaviour
     private CircleCollider2D leftCollider;
     private CircleCollider2D rightCollider;
     private Vector3 _offsetVector;
+    private ContactFilter2D _filter;
+    private LayerMask _mask;
 
     // Use this for initialization
     private void Start()
     {
+        _filter = new ContactFilter2D();
+        _mask = new LayerMask();
+        _mask.value = LayerMask.NameToLayer("Default");
+        _filter.layerMask = _mask;
+
         _radius = width / 2f;
         _lineRenderer = GetComponent<LineRenderer>();
         _offsetVector = new Vector3(0f, labelOffset, 0f);
@@ -92,13 +98,17 @@ public class PapermateBody : MonoBehaviour
 
     private void Update()
     {
-        float h1 = Input.GetAxis("J_LeftStickX");
-        float v1 = Input.GetAxis("J_LeftStickY");
-        _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(h1 * power, v1 * power));
+        // can only apply forces if we are touching a physics body
+        if (IsPaperGrounded())
+        {
+            float h1 = Input.GetAxis("J_LeftStickX");
+            float v1 = Input.GetAxis("J_LeftStickY");
+            _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(h1 * power, v1 * power));
 
-        float h2 = Input.GetAxis("J_RightStickX");
-        float v2 = Input.GetAxis("J_RightStickY");
-        _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * power, v2 * power));
+            float h2 = Input.GetAxis("J_RightStickX");
+            float v2 = Input.GetAxis("J_RightStickY");
+            _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * power, v2 * power));
+        }
 
         if (Input.GetButtonDown("J_LeftStickPress"))
             LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
@@ -122,15 +132,34 @@ public class PapermateBody : MonoBehaviour
         rightTextMesh.transform.rotation = Quaternion.identity;
     }
 
+    /// <summary>
+    /// Check to see if any of the joints in the papermate are colliding with physical bodies
+    /// </summary>
+    /// <returns></returns>
+    private bool IsPaperGrounded()
+    {
+        Collider2D[] results = new Collider2D[10];
+        foreach (GameObject jt in _joints)
+        {
+            CircleCollider2D col2D = jt.GetComponent<CircleCollider2D>();
+            if (col2D != null)
+            {
+                col2D.OverlapCollider(_filter, results);
+                results = results.Where(c => c != null && c.gameObject.layer == _mask.value).ToArray();
+                if (results.Length > 0 && results[0] != null)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, TextMesh textMesh)
     {
-        ContactFilter2D filter = new ContactFilter2D();
-        LayerMask mask = new LayerMask();
-        mask.value = LayerMask.NameToLayer("Default");
-        filter.layerMask = mask;
         Collider2D[] results = new Collider2D[10];
-        col2D.OverlapCollider(filter, results);
-        results = results.Where(c => c != null && c.gameObject.layer == mask.value).ToArray();
+        col2D.OverlapCollider(_filter, results);
+        results = results.Where(c => c != null && c.gameObject.layer == _mask.value).ToArray();
 
         if (results.Length > 0 && results[0] != null)
         {
