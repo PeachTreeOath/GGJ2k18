@@ -54,7 +54,7 @@ public class PapermateBody : MonoBehaviour
 
         _radius = width / 2f;
         _lineRenderer = GetComponent<LineRenderer>();
-        _offsetVector = new Vector3(0f, labelOffset, 0f);
+        _offsetVector = new Vector3(0f, labelOffset, -2f);
         InitializeBody();
     }
 
@@ -310,9 +310,10 @@ public class PapermateBody : MonoBehaviour
         }
     }
 
+    private Vector3 zLineOffset = new Vector3(0, 0, -1);
     private void UpdateLineRendererPositions()
     {
-        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position)
+        _lineRenderer.SetPositions(_joints.Select(j => (j.transform.position + zLineOffset))
                                    .ToArray());
     }
 }
