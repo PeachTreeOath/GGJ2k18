@@ -216,7 +216,6 @@ public class PapermateBody : MonoBehaviour
         GameObject.Destroy(grabJoint);
     }
 
-<<<<<<< HEAD
     private void toggleCheatMode()
     {
         cheatModeEnabled = !cheatModeEnabled;
@@ -252,10 +251,11 @@ public class PapermateBody : MonoBehaviour
                 rb.gravityScale = 1;
             }
         }
-=======
+    }
+
     private void UpdateLineRendererPositions()
     {
         _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());    
->>>>>>> cd83fffae8e377817e90fcc1256ee0f565e915f8
+
     }
 }
