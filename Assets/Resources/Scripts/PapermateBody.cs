@@ -123,14 +123,14 @@ public class PapermateBody : MonoBehaviour
         float v2 = Input.GetAxis("J_RightStickY");
         _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * framePower, v2 * framePower));
 
-        if (Input.GetButtonDown("J_LeftStickPress"))
+        if (Input.GetButtonDown("KeyGrabLeft"))
             _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
-        else if (Input.GetButtonUp("J_LeftStickPress"))
+        else if (Input.GetButtonUp("KeyGrabLeft"))
             UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh, _leftGrabJoint);
 
-        if (Input.GetButtonDown("J_RightStickPress"))
+        if (Input.GetButtonDown("KeyGrabRight"))
             _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
-        else if (Input.GetButtonUp("J_RightStickPress"))
+        else if (Input.GetButtonUp("KeyGrabRight"))
             UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh, _rightGrabJoint);
 
         for (int i = 0; i < jointCount; i++)
