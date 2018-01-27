@@ -26,8 +26,8 @@ public class PapermateBody : MonoBehaviour
     private CircleCollider2D leftCollider;
     private CircleCollider2D rightCollider;
     private Vector3 _offsetVector;
-    private ContactFilter2D _filter;
-    private LayerMask _mask;
+    private int staticPhysicsLayer;
+    private int grabbablePhysicsLayer;
 
     private DistanceJoint2D _leftGrabJoint;
     private DistanceJoint2D _rightGrabJoint;
@@ -35,10 +35,8 @@ public class PapermateBody : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
-        _filter = new ContactFilter2D();
-        _mask = new LayerMask();
-        _mask.value = LayerMask.NameToLayer("Default");
-        _filter.layerMask = _mask;
+        staticPhysicsLayer = LayerMask.NameToLayer("Default");
+        grabbablePhysicsLayer = LayerMask.NameToLayer("Grabbable");
 
         _radius = width / 2f;
         _lineRenderer = GetComponent<LineRenderer>();
@@ -172,8 +170,8 @@ public class PapermateBody : MonoBehaviour
             foreach (CapsuleCollider2D col2D in cols2D)
             {
                 Collider2D[] results = new Collider2D[10];
-                col2D.OverlapCollider(_filter, results);
-                results = results.Where(c => c != null && c.gameObject.layer == _mask.value).ToArray();
+                col2D.OverlapCollider(new ContactFilter2D(), results);
+                results = results.Where(c => c != null && c.gameObject.layer == staticPhysicsLayer).ToArray();
                 if (results.Length > 0 && results[0] != null)
                 {
                     return true;
@@ -186,8 +184,8 @@ public class PapermateBody : MonoBehaviour
     private DistanceJoint2D LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, TextMesh textMesh)
     {
         Collider2D[] results = new Collider2D[10];
-        col2D.OverlapCollider(_filter, results);
-        results = results.Where(c => c != null && c.gameObject.layer == _mask.value).ToArray();
+        col2D.OverlapCollider(new ContactFilter2D(), results);
+        results = results.Where(c => c != null && (c.gameObject.layer == staticPhysicsLayer || c.gameObject.layer == grabbablePhysicsLayer)).ToArray();
 
         if (results.Length > 0 && results[0] != null)
         {
