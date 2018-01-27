@@ -72,7 +72,7 @@ public class PapermateBody : MonoBehaviour
                 hingeJoint.useLimits = true;
                 hingeJoint.connectedBody = prevBody;
                 JointAngleLimits2D limits = new JointAngleLimits2D();
-                limits.max = 30f;
+                limits.max = 0;
                 limits.min = 0;
                 hingeJoint.limits = limits;
                 body.mass = 0.5f;
@@ -89,7 +89,8 @@ public class PapermateBody : MonoBehaviour
                 leftCollider.radius = _radius * 1.5f;
                 leftCollider.isTrigger = true;
                 body.mass = 10f;
-                capsuleCollider.offset = new Vector2(0, 0.25f);
+                capsuleCollider.offset = new Vector2(0, 0.1f);
+                capsuleCollider.size = new Vector2(0.21f, 0.21f);
 
             }
             if (i == jointCount - 1)
@@ -98,7 +99,8 @@ public class PapermateBody : MonoBehaviour
                 rightCollider.radius = _radius * 1.5f;
                 rightCollider.isTrigger = true;
                 body.mass = 10f;
-                capsuleCollider.offset = new Vector2(0, -0.25f);
+                capsuleCollider.offset = new Vector2(0, -0.1f);
+                capsuleCollider.size = new Vector2(0.21f, 0.21f);
             }
         }
 
