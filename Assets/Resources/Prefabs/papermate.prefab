@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4966098689319326}
   - component: {fileID: 23229699959679350}
   - component: {fileID: 102191285351157160}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: right_button_label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4476613828894288}
   - component: {fileID: 23523469136537822}
   - component: {fileID: 102741098549986620}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: left_button_label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4793841855556934}
   - component: {fileID: 120518308086175536}
   - component: {fileID: 114881749870138218}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: papermate
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -101,14 +101,14 @@ public class PapermateBody : MonoBehaviour
         _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * power, v2 * power));
 
         if (Input.GetButtonDown("J_LeftStickPress"))
-            LockLeftJoint();
+            LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
         else if (Input.GetButtonUp("J_LeftStickPress"))
-            UnlockLeftJoint();
+            UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh);
 
         if (Input.GetButtonDown("J_RightStickPress"))
-            LockRightJoint();
+            LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
         else if (Input.GetButtonUp("J_RightStickPress"))
-            UnlockRightJoint();
+            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh);
 
         for (int i = 0; i < jointCount; i++)
         {
@@ -122,47 +122,26 @@ public class PapermateBody : MonoBehaviour
         rightTextMesh.transform.rotation = Quaternion.identity;
     }
 
-    private void LockLeftJoint()
+    private void LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, TextMesh textMesh)
     {
         ContactFilter2D filter = new ContactFilter2D();
         LayerMask mask = new LayerMask();
         mask.value = LayerMask.NameToLayer("Default");
         filter.layerMask = mask;
         Collider2D[] results = new Collider2D[10];
-        leftCollider.OverlapCollider(filter, results);
-        leftTextMesh.color = pressedTextColor;
+        col2D.OverlapCollider(filter, results);
+        results = results.Where(c => c != null && c.gameObject.layer == mask.value).ToArray();
 
-        if (results[0] != null)
+        if (results.Length > 0 && results[0] != null)
         {
-            _joints.First().GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePosition;
+            textMesh.color = pressedTextColor;
+            rigidBody.constraints = RigidbodyConstraints2D.FreezePosition;
         }
     }
 
-    private void LockRightJoint()
+    private void UnlockJoint(Rigidbody2D rigidBody, TextMesh textMesh)
     {
-        ContactFilter2D filter = new ContactFilter2D();
-        LayerMask mask = new LayerMask();
-        mask.value = LayerMask.NameToLayer("Default");
-        filter.layerMask = mask;
-        Collider2D[] results = new Collider2D[10];
-        rightCollider.OverlapCollider(filter, results);
-        rightTextMesh.color = pressedTextColor;
-
-        if (results[0] != null)
-        {
-            _joints.Last().GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePosition;
-        }
-    }
-
-    private void UnlockLeftJoint()
-    {
-        _joints.First().GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
-        leftTextMesh.color = standardTextColor;
-    }
-
-    private void UnlockRightJoint()
-    {
-        _joints.Last().GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
-        rightTextMesh.color = standardTextColor;
+        rigidBody.constraints = RigidbodyConstraints2D.None;
+        textMesh.color = standardTextColor;
     }
 }
