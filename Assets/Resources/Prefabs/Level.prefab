@@ -404,7 +404,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1124828660992794}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.029, y: -0.158, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4558362927450648}
@@ -443,7 +443,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1936272011287420}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 73.1, y: 8.1, z: 0}
+  m_LocalPosition: {x: 68.35, y: 7.92, z: 0}
   m_LocalScale: {x: 31.444427, y: 18.080542, z: 3.9305525}
   m_Children:
   - {fileID: 4375127900941762}
@@ -1356,7 +1356,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.7, y: 1}
   m_EdgeRadius: 0
 --- !u!68 &68560298414737646
 EdgeCollider2D:
@@ -1523,7 +1523,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1675564236
+  randomSeed: 727301789
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -1880,7 +1880,7 @@ ParticleSystem:
     startRotation:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 0.008726646
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -1974,7 +1974,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: -4, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 1, y: 4.6, z: 1}
+    m_Scale: {x: 15.011834, y: 12.347626, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
