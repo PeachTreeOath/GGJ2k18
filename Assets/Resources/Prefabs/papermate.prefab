@@ -113,10 +113,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jointCount: 10
-  unitLength: 4
+  unitLength: 3
   width: 0.2
   power: 350
   airPower: 20
+  upwardLift: 10
+  glideVelocityMax: 4
   leftSprite: {fileID: 212418136826127928}
   rightSprite: {fileID: 212444054012255360}
   labelOffset: 0.25
