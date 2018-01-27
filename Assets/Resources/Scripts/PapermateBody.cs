@@ -28,6 +28,9 @@ public class PapermateBody : MonoBehaviour
     private ContactFilter2D _filter;
     private LayerMask _mask;
 
+    private DistanceJoint2D _leftGrabJoint;
+    private DistanceJoint2D _rightGrabJoint;
+
     // Use this for initialization
     private void Start()
     {
@@ -56,8 +59,12 @@ public class PapermateBody : MonoBehaviour
             joint.layer = LayerMask.NameToLayer("Nonattachable");
             joint.transform.SetParent(transform);
 
-            CircleCollider2D circleCollider = joint.AddComponent<CircleCollider2D>();
-            circleCollider.radius = _radius;
+            //CircleCollider2D circleCollider = joint.AddComponent<CircleCollider2D>();
+            //circleCollider.radius = _radius;
+
+            CapsuleCollider2D capsuleCollider = joint.AddComponent<CapsuleCollider2D>();
+            capsuleCollider.size = new Vector2(0.21f, 0.45f);
+            //capsuleCollider.isTrigger = true;
 
             Rigidbody2D body = joint.AddComponent<Rigidbody2D>();
             if (prevBody != null)
@@ -117,14 +124,14 @@ public class PapermateBody : MonoBehaviour
         }
 
         if (Input.GetButtonDown("J_LeftStickPress"))
-            LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
+            _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
         else if (Input.GetButtonUp("J_LeftStickPress"))
-            UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh);
+            UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh, _leftGrabJoint);
 
         if (Input.GetButtonDown("J_RightStickPress"))
-            LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
+            _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
         else if (Input.GetButtonUp("J_RightStickPress"))
-            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh);
+            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh, _rightGrabJoint);
 
         for (int i = 0; i < jointCount; i++)
         {
@@ -144,12 +151,12 @@ public class PapermateBody : MonoBehaviour
     /// <returns></returns>
     private bool IsPaperGrounded()
     {
-        Collider2D[] results = new Collider2D[10];
         foreach (GameObject jt in _joints)
         {
-            CircleCollider2D col2D = jt.GetComponent<CircleCollider2D>();
-            if (col2D != null)
+            CapsuleCollider2D[] cols2D = jt.GetComponents<CapsuleCollider2D>();
+            foreach (CapsuleCollider2D col2D in cols2D)
             {
+                Collider2D[] results = new Collider2D[10];
                 col2D.OverlapCollider(_filter, results);
                 results = results.Where(c => c != null && c.gameObject.layer == _mask.value).ToArray();
                 if (results.Length > 0 && results[0] != null)
@@ -161,7 +168,7 @@ public class PapermateBody : MonoBehaviour
         return false;
     }
 
-    private void LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, TextMesh textMesh)
+    private DistanceJoint2D LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, TextMesh textMesh)
     {
         Collider2D[] results = new Collider2D[10];
         col2D.OverlapCollider(_filter, results);
@@ -170,13 +177,18 @@ public class PapermateBody : MonoBehaviour
         if (results.Length > 0 && results[0] != null)
         {
             textMesh.color = pressedTextColor;
-            rigidBody.constraints = RigidbodyConstraints2D.FreezePosition;
+            DistanceJoint2D distJt = rigidBody.gameObject.AddComponent<DistanceJoint2D>();
+            distJt.connectedBody = results[0].attachedRigidbody;
+            distJt.connectedAnchor = results[0].transform.InverseTransformPoint(rigidBody.transform.position);
+            return distJt;
         }
+        return null;
     }
 
-    private void UnlockJoint(Rigidbody2D rigidBody, TextMesh textMesh)
+    private void UnlockJoint(Rigidbody2D rigidBody, TextMesh textMesh, DistanceJoint2D grabJoint)
     {
         rigidBody.constraints = RigidbodyConstraints2D.None;
         textMesh.color = standardTextColor;
+        GameObject.Destroy(grabJoint);
     }
 }
