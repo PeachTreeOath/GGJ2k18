@@ -28,6 +28,9 @@ public class PapermateBody : MonoBehaviour
     private ContactFilter2D _filter;
     private LayerMask _mask;
 
+    private DistanceJoint2D _leftGrabJoint;
+    private DistanceJoint2D _rightGrabJoint;
+
     // Use this for initialization
     private void Start()
     {
@@ -117,14 +120,14 @@ public class PapermateBody : MonoBehaviour
         }
 
         if (Input.GetButtonDown("J_LeftStickPress"))
-            LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
+            _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
         else if (Input.GetButtonUp("J_LeftStickPress"))
-            UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh);
+            UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh, _leftGrabJoint);
 
         if (Input.GetButtonDown("J_RightStickPress"))
-            LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
+            _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
         else if (Input.GetButtonUp("J_RightStickPress"))
-            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh);
+            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh, _rightGrabJoint);
 
         for (int i = 0; i < jointCount; i++)
         {
@@ -161,7 +164,7 @@ public class PapermateBody : MonoBehaviour
         return false;
     }
 
-    private void LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, TextMesh textMesh)
+    private DistanceJoint2D LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, TextMesh textMesh)
     {
         Collider2D[] results = new Collider2D[10];
         col2D.OverlapCollider(_filter, results);
@@ -170,13 +173,18 @@ public class PapermateBody : MonoBehaviour
         if (results.Length > 0 && results[0] != null)
         {
             textMesh.color = pressedTextColor;
-            rigidBody.constraints = RigidbodyConstraints2D.FreezePosition;
+            DistanceJoint2D distJt = rigidBody.gameObject.AddComponent<DistanceJoint2D>();
+            distJt.connectedBody = results[0].attachedRigidbody;
+            distJt.connectedAnchor = results[0].transform.InverseTransformPoint(rigidBody.transform.position);
+            return distJt;
         }
+        return null;
     }
 
-    private void UnlockJoint(Rigidbody2D rigidBody, TextMesh textMesh)
+    private void UnlockJoint(Rigidbody2D rigidBody, TextMesh textMesh, DistanceJoint2D grabJoint)
     {
         rigidBody.constraints = RigidbodyConstraints2D.None;
         textMesh.color = standardTextColor;
+        GameObject.Destroy(grabJoint);
     }
 }
