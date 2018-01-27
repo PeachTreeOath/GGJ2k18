@@ -13,6 +13,8 @@ public class PapermateBody : MonoBehaviour
     public float width = 0.2f;
     public float power = 350;
     public float airPower = 20f;
+    public float upwardLift = 10f;
+    public float glideVelocityMax = 4f;
 
     public SpriteRenderer leftSprite;
     public SpriteRenderer rightSprite;
@@ -129,7 +131,8 @@ public class PapermateBody : MonoBehaviour
     private void Update()
     {
         // can only apply forces if we are touching a physics body
-        float framePower = IsPaperGrounded() ? power : airPower;
+        bool amIGrounded = IsPaperGrounded();
+        float framePower = amIGrounded ? power : airPower;
         float h1 = Input.GetAxis("J_LeftStickX");
         float v1 = Input.GetAxis("J_LeftStickY");
         _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(h1 * framePower, v1 * framePower));
@@ -162,6 +165,36 @@ public class PapermateBody : MonoBehaviour
         if (Input.GetButtonDown("CheatModeButton"))
             toggleCheatMode();
         UpdateLineRendererPositions();
+
+        // apply special upward force when you are parallel
+        Vector2 vel = _joints.First().GetComponent<Rigidbody2D>().velocity;
+        if (!amIGrounded && vel.y < 0)
+        {
+            Transform left, right;
+            if (_joints.Last().transform.position.x >= _joints.First().transform.position.x)
+            {
+                right = _joints.Last().transform;
+                left = _joints.First().transform;
+            }
+            else
+            {
+                left = _joints.Last().transform;
+                right = _joints.First().transform;
+            }
+
+            // find the ratio of horizontal to vertical spread
+            float distance = Vector3.Distance(left.position, right.position);
+            float horiz = Mathf.Abs(right.position.x - left.position.x);
+            float hRatio = horiz / distance;
+            float vert = left.position.y - right.position.y;
+            float vRatio = vert / distance;
+            float vertMove = Mathf.Abs(vel.x) > glideVelocityMax && Mathf.Sign(vel.x) == Mathf.Sign(vRatio) ? 0f : Mathf.Sign(vRatio) * 100 * hRatio;
+            Vector3 currentUpLift = new Vector3(vertMove, Mathf.Abs(vel.y * upwardLift * hRatio), 0f);
+
+            // apply the upward lift to each point
+            _joints.First().GetComponent<Rigidbody2D>().AddForce(currentUpLift);
+            _joints.Last().GetComponent<Rigidbody2D>().AddForce(currentUpLift);
+        }
 
         // render the correct location for each label
         leftSprite.transform.position = _joints.First().transform.position + _offsetVector;
@@ -279,7 +312,7 @@ public class PapermateBody : MonoBehaviour
 
     private void UpdateLineRendererPositions()
     {
-        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());
-
+        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position)
+                                   .ToArray());
     }
 }
