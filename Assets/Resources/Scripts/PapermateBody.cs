@@ -12,6 +12,7 @@ public class PapermateBody : MonoBehaviour
     public int unitLength = 4;
     public float width = 0.2f;
     public float power = 100f;
+    public float airPower = 20f;
 
     public TextMesh leftTextMesh;
     public TextMesh rightTextMesh;
@@ -59,12 +60,8 @@ public class PapermateBody : MonoBehaviour
             joint.layer = LayerMask.NameToLayer("Nonattachable");
             joint.transform.SetParent(transform);
 
-            //CircleCollider2D circleCollider = joint.AddComponent<CircleCollider2D>();
-            //circleCollider.radius = _radius;
-
             CapsuleCollider2D capsuleCollider = joint.AddComponent<CapsuleCollider2D>();
             capsuleCollider.size = new Vector2(0.21f, 0.6f);
-            //capsuleCollider.isTrigger = true;
 
             Rigidbody2D body = joint.AddComponent<Rigidbody2D>();
             if (prevBody != null)
@@ -81,7 +78,6 @@ public class PapermateBody : MonoBehaviour
                 body.mass = 0.5f;
 
             }
-                
 
             _joints.Add(joint);
             prevBody = body;
@@ -109,21 +105,23 @@ public class PapermateBody : MonoBehaviour
         _lineRenderer.useWorldSpace = true;
         _lineRenderer.positionCount = jointCount;
         _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());
+
+        // set the middle point as the camera follower
+        CameraPlayerController camera = FindObjectOfType<CameraPlayerController>();
+        camera.mainPlayer = _joints[jointCount / 2].gameObject;
     }
 
     private void Update()
     {
         // can only apply forces if we are touching a physics body
-        if (IsPaperGrounded())
-        {
-            float h1 = Input.GetAxis("J_LeftStickX");
-            float v1 = Input.GetAxis("J_LeftStickY");
-            _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(h1 * power, v1 * power));
+        float framePower = IsPaperGrounded() ? power : airPower;
+        float h1 = Input.GetAxis("J_LeftStickX");
+        float v1 = Input.GetAxis("J_LeftStickY");
+        _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(h1 * framePower, v1 * framePower));
 
-            float h2 = Input.GetAxis("J_RightStickX");
-            float v2 = Input.GetAxis("J_RightStickY");
-            _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * power, v2 * power));
-        }
+        float h2 = Input.GetAxis("J_RightStickX");
+        float v2 = Input.GetAxis("J_RightStickY");
+        _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * framePower, v2 * framePower));
 
         if (Input.GetButtonDown("KeyGrabLeft"))
             _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
