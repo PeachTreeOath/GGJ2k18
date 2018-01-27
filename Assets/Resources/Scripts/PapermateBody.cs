@@ -143,23 +143,6 @@ public class PapermateBody : MonoBehaviour
         rightTextMesh.transform.rotation = Quaternion.identity;
     }
 
-    private void UpdateLineRendererPositions()
-    {
-        //temporary for setting up the final check in
-        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());
-
-        // // gets the vector locations of each joint
-        // List<Vector3> vecs = _joints.Select(j => j.transform.position)
-
-        // // Assumes 3 times as many points as joints, minus the two end points
-        // // Uses cubic interpolation
-        // for(int i = 0; i < jointCount; i++)
-        // {
-        //     _joints[i].transform.position
-        // }
-
-    }
-
     /// <summary>
     /// Check to see if any of the joints in the papermate are colliding with physical bodies
     /// </summary>
@@ -205,5 +188,10 @@ public class PapermateBody : MonoBehaviour
         rigidBody.constraints = RigidbodyConstraints2D.None;
         textMesh.color = standardTextColor;
         GameObject.Destroy(grabJoint);
+    }
+
+    private void UpdateLineRendererPositions()
+    {
+        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());    
     }
 }
