@@ -59,8 +59,12 @@ public class PapermateBody : MonoBehaviour
             joint.layer = LayerMask.NameToLayer("Nonattachable");
             joint.transform.SetParent(transform);
 
-            CircleCollider2D circleCollider = joint.AddComponent<CircleCollider2D>();
-            circleCollider.radius = _radius;
+            //CircleCollider2D circleCollider = joint.AddComponent<CircleCollider2D>();
+            //circleCollider.radius = _radius;
+
+            CapsuleCollider2D capsuleCollider = joint.AddComponent<CapsuleCollider2D>();
+            capsuleCollider.size = new Vector2(0.21f, 0.6f);
+            //capsuleCollider.isTrigger = true;
 
             Rigidbody2D body = joint.AddComponent<Rigidbody2D>();
             if (prevBody != null)
@@ -89,6 +93,7 @@ public class PapermateBody : MonoBehaviour
                 leftCollider.radius = _radius * 1.5f;
                 leftCollider.isTrigger = true;
                 body.mass = 10f;
+                capsuleCollider.offset = new Vector2(0, 0.25f);
 
             }
             if (i == jointCount - 1)
@@ -97,6 +102,7 @@ public class PapermateBody : MonoBehaviour
                 rightCollider.radius = _radius * 1.5f;
                 rightCollider.isTrigger = true;
                 body.mass = 10f;
+                capsuleCollider.offset = new Vector2(0, -0.25f);
             }
         }
 
@@ -149,8 +155,8 @@ public class PapermateBody : MonoBehaviour
     {
         foreach (GameObject jt in _joints)
         {
-            CircleCollider2D[] cols2D = jt.GetComponents<CircleCollider2D>();
-            foreach (CircleCollider2D col2D in cols2D)
+            CapsuleCollider2D[] cols2D = jt.GetComponents<CapsuleCollider2D>();
+            foreach (CapsuleCollider2D col2D in cols2D)
             {
                 Collider2D[] results = new Collider2D[10];
                 col2D.OverlapCollider(_filter, results);
