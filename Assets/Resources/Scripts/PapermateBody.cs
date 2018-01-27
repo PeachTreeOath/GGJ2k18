@@ -8,7 +8,6 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class PapermateBody : MonoBehaviour
 {
-
     public int jointCount = 10;
     public int unitLength = 4;
     public float width = 0.2f;
@@ -26,10 +25,20 @@ public class PapermateBody : MonoBehaviour
     private CircleCollider2D leftCollider;
     private CircleCollider2D rightCollider;
     private Vector3 _offsetVector;
+    private ContactFilter2D _filter;
+    private LayerMask _mask;
+
+    private DistanceJoint2D _leftGrabJoint;
+    private DistanceJoint2D _rightGrabJoint;
 
     // Use this for initialization
     private void Start()
     {
+        _filter = new ContactFilter2D();
+        _mask = new LayerMask();
+        _mask.value = LayerMask.NameToLayer("Default");
+        _filter.layerMask = _mask;
+
         _radius = width / 2f;
         _lineRenderer = GetComponent<LineRenderer>();
         _offsetVector = new Vector3(0f, labelOffset, 0f);
@@ -44,13 +53,18 @@ public class PapermateBody : MonoBehaviour
         Rigidbody2D prevBody = null;
         for (int i = 0; i < jointCount; i++)
         {
+            
             GameObject joint = new GameObject("joint_" + i);
             joint.transform.localPosition = new Vector3(transform.position.x, transform.position.y + (segLen * i), transform.position.z);
             joint.layer = LayerMask.NameToLayer("Nonattachable");
             joint.transform.SetParent(transform);
 
-            CircleCollider2D circleCollider = joint.AddComponent<CircleCollider2D>();
-            circleCollider.radius = _radius;
+            //CircleCollider2D circleCollider = joint.AddComponent<CircleCollider2D>();
+            //circleCollider.radius = _radius;
+
+            CapsuleCollider2D capsuleCollider = joint.AddComponent<CapsuleCollider2D>();
+            capsuleCollider.size = new Vector2(0.21f, 0.6f);
+            //capsuleCollider.isTrigger = true;
 
             Rigidbody2D body = joint.AddComponent<Rigidbody2D>();
             if (prevBody != null)
@@ -64,7 +78,10 @@ public class PapermateBody : MonoBehaviour
                 limits.max = 30f;
                 limits.min = 0;
                 hingeJoint.limits = limits;
+                body.mass = 0.5f;
+
             }
+                
 
             _joints.Add(joint);
             prevBody = body;
@@ -75,6 +92,8 @@ public class PapermateBody : MonoBehaviour
                 leftCollider = joint.AddComponent<CircleCollider2D>();
                 leftCollider.radius = _radius * 1.5f;
                 leftCollider.isTrigger = true;
+                body.mass = 10f;
+                capsuleCollider.offset = new Vector2(0, 0.25f);
 
             }
             if (i == jointCount - 1)
@@ -82,6 +101,8 @@ public class PapermateBody : MonoBehaviour
                 rightCollider = joint.AddComponent<CircleCollider2D>();
                 rightCollider.radius = _radius * 1.5f;
                 rightCollider.isTrigger = true;
+                body.mass = 10f;
+                capsuleCollider.offset = new Vector2(0, -0.25f);
             }
         }
 
@@ -92,23 +113,27 @@ public class PapermateBody : MonoBehaviour
 
     private void Update()
     {
-        float h1 = Input.GetAxis("J_LeftStickX");
-        float v1 = Input.GetAxis("J_LeftStickY");
-        _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(h1 * power, v1 * power));
+        // can only apply forces if we are touching a physics body
+        if (IsPaperGrounded())
+        {
+            float h1 = Input.GetAxis("J_LeftStickX");
+            float v1 = Input.GetAxis("J_LeftStickY");
+            _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(h1 * power, v1 * power));
 
-        float h2 = Input.GetAxis("J_RightStickX");
-        float v2 = Input.GetAxis("J_RightStickY");
-        _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * power, v2 * power));
+            float h2 = Input.GetAxis("J_RightStickX");
+            float v2 = Input.GetAxis("J_RightStickY");
+            _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * power, v2 * power));
+        }
 
         if (Input.GetButtonDown("J_LeftStickPress"))
-            LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
+            _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
         else if (Input.GetButtonUp("J_LeftStickPress"))
-            UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh);
+            UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh, _leftGrabJoint);
 
         if (Input.GetButtonDown("J_RightStickPress"))
-            LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
+            _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
         else if (Input.GetButtonUp("J_RightStickPress"))
-            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh);
+            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh, _rightGrabJoint);
 
         for (int i = 0; i < jointCount; i++)
         {
@@ -122,26 +147,50 @@ public class PapermateBody : MonoBehaviour
         rightTextMesh.transform.rotation = Quaternion.identity;
     }
 
-    private void LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, TextMesh textMesh)
+    /// <summary>
+    /// Check to see if any of the joints in the papermate are colliding with physical bodies
+    /// </summary>
+    /// <returns></returns>
+    private bool IsPaperGrounded()
     {
-        ContactFilter2D filter = new ContactFilter2D();
-        LayerMask mask = new LayerMask();
-        mask.value = LayerMask.NameToLayer("Default");
-        filter.layerMask = mask;
+        foreach (GameObject jt in _joints)
+        {
+            CapsuleCollider2D[] cols2D = jt.GetComponents<CapsuleCollider2D>();
+            foreach (CapsuleCollider2D col2D in cols2D)
+            {
+                Collider2D[] results = new Collider2D[10];
+                col2D.OverlapCollider(_filter, results);
+                results = results.Where(c => c != null && c.gameObject.layer == _mask.value).ToArray();
+                if (results.Length > 0 && results[0] != null)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private DistanceJoint2D LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, TextMesh textMesh)
+    {
         Collider2D[] results = new Collider2D[10];
-        col2D.OverlapCollider(filter, results);
-        results = results.Where(c => c != null && c.gameObject.layer == mask.value).ToArray();
+        col2D.OverlapCollider(_filter, results);
+        results = results.Where(c => c != null && c.gameObject.layer == _mask.value).ToArray();
 
         if (results.Length > 0 && results[0] != null)
         {
             textMesh.color = pressedTextColor;
-            rigidBody.constraints = RigidbodyConstraints2D.FreezePosition;
+            DistanceJoint2D distJt = rigidBody.gameObject.AddComponent<DistanceJoint2D>();
+            distJt.connectedBody = results[0].attachedRigidbody;
+            distJt.connectedAnchor = results[0].transform.InverseTransformPoint(rigidBody.transform.position);
+            return distJt;
         }
+        return null;
     }
 
-    private void UnlockJoint(Rigidbody2D rigidBody, TextMesh textMesh)
+    private void UnlockJoint(Rigidbody2D rigidBody, TextMesh textMesh, DistanceJoint2D grabJoint)
     {
         rigidBody.constraints = RigidbodyConstraints2D.None;
         textMesh.color = standardTextColor;
+        GameObject.Destroy(grabJoint);
     }
 }

@@ -230,7 +230,7 @@ MonoBehaviour:
   power: 100
   leftTextMesh: {fileID: 102741098549986620}
   rightTextMesh: {fileID: 102191285351157160}
-  labelOffset: 1
+  labelOffset: 0.25
   standardTextColor: {r: 1, g: 1, b: 1, a: 1}
   pressedTextColor: {r: 1, g: 0.6, b: 0, a: 1}
 --- !u!120 &120518308086175536
