@@ -50,6 +50,7 @@ public class PapermateBody : MonoBehaviour
         Rigidbody2D prevBody = null;
         for (int i = 0; i < jointCount; i++)
         {
+            
             GameObject joint = new GameObject("joint_" + i);
             joint.transform.localPosition = new Vector3(transform.position.x, transform.position.y + (segLen * i), transform.position.z);
             joint.layer = LayerMask.NameToLayer("Nonattachable");
@@ -70,7 +71,10 @@ public class PapermateBody : MonoBehaviour
                 limits.max = 30f;
                 limits.min = 0;
                 hingeJoint.limits = limits;
+                body.mass = 0.5f;
+
             }
+                
 
             _joints.Add(joint);
             prevBody = body;
@@ -81,6 +85,7 @@ public class PapermateBody : MonoBehaviour
                 leftCollider = joint.AddComponent<CircleCollider2D>();
                 leftCollider.radius = _radius * 1.5f;
                 leftCollider.isTrigger = true;
+                body.mass = 10f;
 
             }
             if (i == jointCount - 1)
@@ -88,6 +93,7 @@ public class PapermateBody : MonoBehaviour
                 rightCollider = joint.AddComponent<CircleCollider2D>();
                 rightCollider.radius = _radius * 1.5f;
                 rightCollider.isTrigger = true;
+                body.mass = 10f;
             }
         }
 
