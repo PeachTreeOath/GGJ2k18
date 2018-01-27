@@ -14,8 +14,9 @@ public class PapermateBody : MonoBehaviour
     public float power = 350;
     public float airPower = 20f;
 
-    public TextMesh leftTextMesh;
-    public TextMesh rightTextMesh;
+    public SpriteRenderer leftSprite;
+    public SpriteRenderer rightSprite;
+
     public float labelOffset = 0.25f;
     public Color standardTextColor = Color.white;
     public Color pressedTextColor = new Color(1f, 0.6f, 0f);
@@ -29,12 +30,23 @@ public class PapermateBody : MonoBehaviour
     private int staticPhysicsLayer;
     private int grabbablePhysicsLayer;
 
+    private bool cheatModeEnabled = false;
+
     private DistanceJoint2D _leftGrabJoint;
     private DistanceJoint2D _rightGrabJoint;
+    private Sprite leftSpriteOff;
+    private Sprite rightSpriteOff;
+    private Sprite leftSpriteOn;
+    private Sprite rightSpriteOn;
 
     // Use this for initialization
     private void Start()
     {
+        leftSpriteOff = Resources.Load<Sprite>("Textures/leftButtonOff");
+        rightSpriteOff = Resources.Load<Sprite>("Textures/rightButtonOff");
+        leftSpriteOn = Resources.Load<Sprite>("Textures/leftButtonOn");
+        rightSpriteOn = Resources.Load<Sprite>("Textures/rightButtonOn");
+
         staticPhysicsLayer = LayerMask.NameToLayer("Default");
         grabbablePhysicsLayer = LayerMask.NameToLayer("Grabbable");
 
@@ -52,7 +64,7 @@ public class PapermateBody : MonoBehaviour
         Rigidbody2D prevBody = null;
         for (int i = 0; i < jointCount; i++)
         {
-            
+
             GameObject joint = new GameObject("joint_" + i);
             joint.transform.localPosition = new Vector3(transform.position.x, transform.position.y + (segLen * i), transform.position.z);
             joint.layer = LayerMask.NameToLayer("Nonattachable");
@@ -127,51 +139,41 @@ public class PapermateBody : MonoBehaviour
         _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * framePower, v2 * framePower));
 
         if (Input.GetButtonDown("KeyGrabLeft"))
-        {
-            if (_leftGrabJoint == null)
-                _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
-        }
+            _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftSprite, true);
         else if (Input.GetButtonUp("KeyGrabLeft"))
-        {
-            UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh, _leftGrabJoint);
-            _leftGrabJoint = null;
-        }
+            UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftSprite, _leftGrabJoint, true);
+
+        if (Input.GetButtonDown("KeyGrabRight"))
+            _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightSprite, false);
+        else if (Input.GetButtonUp("KeyGrabRight"))
+            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightSprite, _rightGrabJoint, false);
 
         if (Input.GetButtonDown("KeyGrabRight"))
         {
             if (_rightGrabJoint == null)
-                _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
+                _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, leftSprite, true);
         }
         else if (Input.GetButtonUp("KeyGrabRight"))
         {
-            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh, _rightGrabJoint);
+            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightSprite, _rightGrabJoint, false);
             _rightGrabJoint = null;
         }
 
+        if (Input.GetButtonDown("CheatModeButton"))
+            toggleCheatMode();
         UpdateLineRendererPositions();
 
         // render the correct location for each label
-        leftTextMesh.transform.position = _joints.First().transform.position + _offsetVector;
-        rightTextMesh.transform.position = _joints.Last().transform.position + _offsetVector;
-        leftTextMesh.transform.rotation = Quaternion.identity;
-        rightTextMesh.transform.rotation = Quaternion.identity;
+        leftSprite.transform.position = _joints.First().transform.position + _offsetVector;
+        rightSprite.transform.position = _joints.Last().transform.position + _offsetVector;
+        leftSprite.transform.rotation = Quaternion.identity;
+        rightSprite.transform.rotation = Quaternion.identity;
     }
 
-    private void UpdateLineRendererPositions()
+    private void LateUpdate()
     {
-        //temporary for setting up the final check in
-        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());
-
-        // // gets the vector locations of each joint
-        // List<Vector3> vecs = _joints.Select(j => j.transform.position)
-
-        // // Assumes 3 times as many points as joints, minus the two end points
-        // // Uses cubic interpolation
-        // for(int i = 0; i < jointCount; i++)
-        // {
-        //     _joints[i].transform.position
-        // }
-
+        leftSprite.transform.position += new Vector3(0, 0.25f, 0);
+        rightSprite.transform.position += new Vector3(0, 0.25f, 0);
     }
 
     /// <summary>
@@ -180,6 +182,10 @@ public class PapermateBody : MonoBehaviour
     /// <returns></returns>
     private bool IsPaperGrounded()
     {
+        if (cheatModeEnabled)
+        {
+            return true;
+        }
         foreach (GameObject jt in _joints)
         {
             CapsuleCollider2D[] cols2D = jt.GetComponents<CapsuleCollider2D>();
@@ -204,7 +210,7 @@ public class PapermateBody : MonoBehaviour
         return false;
     }
 
-    private DistanceJoint2D LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, TextMesh textMesh)
+    private DistanceJoint2D LockJoint(Rigidbody2D rigidBody, CircleCollider2D col2D, SpriteRenderer sprite, bool isLeft)
     {
         Collider2D[] results = new Collider2D[10];
         col2D.OverlapCollider(new ContactFilter2D(), results);
@@ -212,7 +218,11 @@ public class PapermateBody : MonoBehaviour
 
         if (results.Length > 0 && results[0] != null)
         {
-            textMesh.color = pressedTextColor;
+            if (isLeft)
+                leftSprite.sprite = leftSpriteOn;
+            else
+                rightSprite.sprite = rightSpriteOn;
+
             DistanceJoint2D distJt = rigidBody.gameObject.AddComponent<DistanceJoint2D>();
             distJt.connectedBody = results[0].attachedRigidbody;
             distJt.connectedAnchor = results[0].transform.InverseTransformPoint(rigidBody.transform.position);
@@ -221,9 +231,55 @@ public class PapermateBody : MonoBehaviour
         return null;
     }
 
-    private void UnlockJoint(Rigidbody2D rigidBody, TextMesh textMesh, DistanceJoint2D grabJoint)
+    private void UnlockJoint(Rigidbody2D rigidBody, SpriteRenderer sprite, DistanceJoint2D grabJoint, bool isLeft)
     {
-        textMesh.color = standardTextColor;
+        if (isLeft)
+            leftSprite.sprite = leftSpriteOff;
+        else
+            rightSprite.sprite = rightSpriteOff;
         GameObject.Destroy(grabJoint);
+    }
+
+    private void toggleCheatMode()
+    {
+        cheatModeEnabled = !cheatModeEnabled;
+
+        if (cheatModeEnabled)
+        {
+            Debug.Log("Cheat mode enabled.");
+            foreach (GameObject joint in _joints)
+            {
+                Collider2D[] colliders = joint.GetComponents<Collider2D>();
+                foreach (Collider2D collider in colliders)
+                {
+                    collider.enabled = false;
+                }
+
+                Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
+                rb.gravityScale = 0;
+            }
+        }
+        else
+        {
+            Debug.Log("Cheat mode disabled.");
+            foreach (GameObject joint in _joints)
+            {
+                Collider2D[] colliders = joint.GetComponents<Collider2D>();
+                foreach (Collider2D collider in colliders)
+                {
+                    collider.enabled = true;
+
+                }
+
+                Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
+                rb.gravityScale = 1;
+            }
+        }
+    }
+
+    private void UpdateLineRendererPositions()
+    {
+        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());
+
     }
 }
