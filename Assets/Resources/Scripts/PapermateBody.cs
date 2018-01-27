@@ -279,7 +279,7 @@ public class PapermateBody : MonoBehaviour
 
     private void UpdateLineRendererPositions()
     {
-        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());
-
+        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position)
+                                   .ToArray());
     }
 }
