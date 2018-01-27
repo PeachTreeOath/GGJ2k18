@@ -127,14 +127,26 @@ public class PapermateBody : MonoBehaviour
         _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * framePower, v2 * framePower));
 
         if (Input.GetButtonDown("KeyGrabLeft"))
-            _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
+        {
+            if (_leftGrabJoint == null)
+                _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
+        }
         else if (Input.GetButtonUp("KeyGrabLeft"))
+        {
             UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh, _leftGrabJoint);
+            _leftGrabJoint = null;
+        }
 
         if (Input.GetButtonDown("KeyGrabRight"))
-            _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
+        {
+            if (_rightGrabJoint == null)
+                _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
+        }
         else if (Input.GetButtonUp("KeyGrabRight"))
+        {
             UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh, _rightGrabJoint);
+            _rightGrabJoint = null;
+        }
 
         if (Input.GetButtonDown("CheatModeButton"))
             toggleCheatMode();
@@ -145,23 +157,6 @@ public class PapermateBody : MonoBehaviour
         rightTextMesh.transform.position = _joints.Last().transform.position + _offsetVector;
         leftTextMesh.transform.rotation = Quaternion.identity;
         rightTextMesh.transform.rotation = Quaternion.identity;
-    }
-
-    private void UpdateLineRendererPositions()
-    {
-        //temporary for setting up the final check in
-        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());
-
-        // // gets the vector locations of each joint
-        // List<Vector3> vecs = _joints.Select(j => j.transform.position)
-
-        // // Assumes 3 times as many points as joints, minus the two end points
-        // // Uses cubic interpolation
-        // for(int i = 0; i < jointCount; i++)
-        // {
-        //     _joints[i].transform.position
-        // }
-
     }
 
     /// <summary>
@@ -188,6 +183,13 @@ public class PapermateBody : MonoBehaviour
                 }
             }
         }
+
+        // if we are grabbing a grounded object we can also return true
+        if (_leftGrabJoint != null && _leftGrabJoint.connectedBody.gameObject.layer == staticPhysicsLayer)
+            return true;
+        if (_rightGrabJoint != null && _rightGrabJoint.connectedBody.gameObject.layer == staticPhysicsLayer)
+            return true;
+
         return false;
     }
 
@@ -210,11 +212,11 @@ public class PapermateBody : MonoBehaviour
 
     private void UnlockJoint(Rigidbody2D rigidBody, TextMesh textMesh, DistanceJoint2D grabJoint)
     {
-        rigidBody.constraints = RigidbodyConstraints2D.None;
         textMesh.color = standardTextColor;
         GameObject.Destroy(grabJoint);
     }
 
+<<<<<<< HEAD
     private void toggleCheatMode()
     {
         cheatModeEnabled = !cheatModeEnabled;
@@ -250,5 +252,10 @@ public class PapermateBody : MonoBehaviour
                 rb.gravityScale = 1;
             }
         }
+=======
+    private void UpdateLineRendererPositions()
+    {
+        _lineRenderer.SetPositions(_joints.Select(j => j.transform.position).ToArray());    
+>>>>>>> cd83fffae8e377817e90fcc1256ee0f565e915f8
     }
 }
