@@ -61,7 +61,7 @@ public class PapermateBody : MonoBehaviour
             joint.transform.SetParent(transform);
 
             CapsuleCollider2D capsuleCollider = joint.AddComponent<CapsuleCollider2D>();
-            capsuleCollider.size = new Vector2(0.21f, 0.45f);
+            capsuleCollider.size = new Vector2(0.21f, 0.6f);
 
             Rigidbody2D body = joint.AddComponent<Rigidbody2D>();
             if (prevBody != null)
@@ -89,6 +89,7 @@ public class PapermateBody : MonoBehaviour
                 leftCollider.radius = _radius * 1.5f;
                 leftCollider.isTrigger = true;
                 body.mass = 10f;
+                capsuleCollider.offset = new Vector2(0, 0.25f);
 
             }
             if (i == jointCount - 1)
@@ -97,6 +98,7 @@ public class PapermateBody : MonoBehaviour
                 rightCollider.radius = _radius * 1.5f;
                 rightCollider.isTrigger = true;
                 body.mass = 10f;
+                capsuleCollider.offset = new Vector2(0, -0.25f);
             }
         }
 
