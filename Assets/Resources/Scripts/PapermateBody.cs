@@ -125,14 +125,26 @@ public class PapermateBody : MonoBehaviour
         _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * framePower, v2 * framePower));
 
         if (Input.GetButtonDown("KeyGrabLeft"))
-            _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
+        {
+            if (_leftGrabJoint == null)
+                _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftTextMesh);
+        }
         else if (Input.GetButtonUp("KeyGrabLeft"))
+        {
             UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftTextMesh, _leftGrabJoint);
+            _leftGrabJoint = null;
+        }
 
         if (Input.GetButtonDown("KeyGrabRight"))
-            _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
+        {
+            if (_rightGrabJoint == null)
+                _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightTextMesh);
+        }
         else if (Input.GetButtonUp("KeyGrabRight"))
+        {
             UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightTextMesh, _rightGrabJoint);
+            _rightGrabJoint = null;
+        }
 
         UpdateLineRendererPositions();
 
@@ -209,7 +221,6 @@ public class PapermateBody : MonoBehaviour
 
     private void UnlockJoint(Rigidbody2D rigidBody, TextMesh textMesh, DistanceJoint2D grabJoint)
     {
-        rigidBody.constraints = RigidbodyConstraints2D.None;
         textMesh.color = standardTextColor;
         GameObject.Destroy(grabJoint);
     }
