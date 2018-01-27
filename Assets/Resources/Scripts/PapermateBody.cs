@@ -64,10 +64,13 @@ public class PapermateBody : MonoBehaviour {
 
     private void Update()
     {
-        float h = Input.GetAxis("J_LeftStickX");
-        float v = Input.GetAxis("J_LeftStickY");
+        float h1 = Input.GetAxis("J_LeftStickX");
+        float v1 = Input.GetAxis("J_LeftStickY");
+        _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(h1 * power, v1 * power));
 
-        _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h * power, v * power));
+        float h2 = Input.GetAxis("J_RightStickX");
+        float v2 = Input.GetAxis("J_RightStickY");
+        _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * power, v2 * power));
 
         for (int i = 0; i < jointCount; i++)
         {
