@@ -6,29 +6,37 @@ public class BallSpawner : MonoBehaviour {
 
     public float spawnRateInSecs;
     public int maxBalls;
-    public GameObject ballPrefab;
+    public GameObject[] ballPrefabs;
 
     private int currentBalls;
     private float timeSinceLastSpawn;
+    private Queue<GameObject> balls;
     
 
 	// Use this for initialization
 	void Start () {
         currentBalls = 0;
         timeSinceLastSpawn = 0;
+        balls = new Queue<GameObject>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
         timeSinceLastSpawn += Time.deltaTime;
 
-        if (timeSinceLastSpawn >= spawnRateInSecs && currentBalls < maxBalls)
+        if (timeSinceLastSpawn >= spawnRateInSecs)
         {
+            if (currentBalls >= maxBalls)
+            {
+                GameObject oldestBall = balls.Dequeue();
+                Destroy(oldestBall);
+                currentBalls--;
+            }
             timeSinceLastSpawn = 0;
             currentBalls++;
-
-            GameObject ball = Instantiate<GameObject>(ballPrefab, transform);
-
+            int randPrefabIndex = Random.Range(0, ballPrefabs.Length);
+            GameObject ball = Instantiate<GameObject>(ballPrefabs[randPrefabIndex], transform);
+            balls.Enqueue(ball);
 
         }
 	}
