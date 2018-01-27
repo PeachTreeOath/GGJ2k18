@@ -14,17 +14,25 @@ public class PapermateBody : MonoBehaviour
     public float width = 0.2f;
     public float power = 100f;
 
+    public TextMesh leftTextMesh;
+    public TextMesh rightTextMesh;
+    public float labelOffset = 0.25f;
+    public Color standardTextColor = Color.white;
+    public Color pressedTextColor = new Color(1f, 0.6f, 0f);
+
     private float _radius;
     private LineRenderer _lineRenderer;
     private List<GameObject> _joints;
     private CircleCollider2D leftCollider;
     private CircleCollider2D rightCollider;
+    private Vector3 _offsetVector;
 
     // Use this for initialization
     private void Start()
     {
         _radius = width / 2f;
         _lineRenderer = GetComponent<LineRenderer>();
+        _offsetVector = new Vector3(0f, labelOffset, 0f);
         InitializeBody();
     }
 
@@ -67,6 +75,7 @@ public class PapermateBody : MonoBehaviour
                 leftCollider = joint.AddComponent<CircleCollider2D>();
                 leftCollider.radius = _radius * 1.5f;
                 leftCollider.isTrigger = true;
+
             }
             if (i == jointCount - 1)
             {
@@ -105,6 +114,12 @@ public class PapermateBody : MonoBehaviour
         {
             _lineRenderer.SetPosition(i, _joints[i].transform.position);
         }
+
+        // render the correct location for each label
+        leftTextMesh.transform.position = _joints.First().transform.position + _offsetVector;
+        rightTextMesh.transform.position = _joints.Last().transform.position + _offsetVector;
+        leftTextMesh.transform.rotation = Quaternion.identity;
+        rightTextMesh.transform.rotation = Quaternion.identity;
     }
 
     private void LockLeftJoint()
@@ -115,6 +130,7 @@ public class PapermateBody : MonoBehaviour
         filter.layerMask = mask;
         Collider2D[] results = new Collider2D[10];
         leftCollider.OverlapCollider(filter, results);
+        leftTextMesh.color = pressedTextColor;
 
         if (results[0] != null)
         {
@@ -130,6 +146,7 @@ public class PapermateBody : MonoBehaviour
         filter.layerMask = mask;
         Collider2D[] results = new Collider2D[10];
         rightCollider.OverlapCollider(filter, results);
+        rightTextMesh.color = pressedTextColor;
 
         if (results[0] != null)
         {
@@ -140,10 +157,12 @@ public class PapermateBody : MonoBehaviour
     private void UnlockLeftJoint()
     {
         _joints.First().GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+        leftTextMesh.color = standardTextColor;
     }
 
     private void UnlockRightJoint()
     {
         _joints.Last().GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+        rightTextMesh.color = standardTextColor;
     }
 }
