@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -40,6 +41,8 @@ public class PapermateBody : MonoBehaviour
     private Sprite rightSpriteOff;
     private Sprite leftSpriteOn;
     private Sprite rightSpriteOn;
+
+    float time = 0f;
 
     // Use this for initialization
     private void Start()
@@ -164,6 +167,8 @@ public class PapermateBody : MonoBehaviour
         */
         if (Input.GetButtonDown("CheatModeButton"))
             toggleCheatMode();
+        if (Input.GetButtonDown("UnwrinkleButton"))
+            Uncrinkle();
         UpdateLineRendererPositions();
 
         // apply special upward force when you are parallel
@@ -273,6 +278,51 @@ public class PapermateBody : MonoBehaviour
         GameObject.Destroy(grabJoint);
     }
 
+    private void Uncrinkle()
+    {
+        StartCoroutine(SteamPress());
+    }
+
+    IEnumerator SteamPress()
+    {
+        while (time < 3)
+        {
+            time += Time.deltaTime;
+            foreach (GameObject joint in _joints)
+            {
+                Collider2D[] colliders = joint.GetComponents<Collider2D>();
+                foreach (Collider2D collider in colliders)
+                {
+                    collider.enabled = false;
+                }
+
+                Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
+                rb.gravityScale = 0;
+            }
+
+            _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(-10, 0));
+            _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(10, 0));
+        }
+        yield return 0;
+        if (time >= 3f)
+        { 
+            time = 0;
+            foreach (GameObject joint in _joints)
+            {
+                Collider2D[] colliders = joint.GetComponents<Collider2D>();
+                foreach (Collider2D collider in colliders)
+                {
+                    collider.enabled = true;
+
+                }
+
+                Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
+                rb.gravityScale = 1;
+            }
+        }   
+    }
+
+    
     private void toggleCheatMode()
     {
         cheatModeEnabled = !cheatModeEnabled;
