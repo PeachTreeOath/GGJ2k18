@@ -41,6 +41,7 @@ public class PapermateBody : MonoBehaviour
     private Sprite rightSpriteOff;
     private Sprite leftSpriteOn;
     private Sprite rightSpriteOn;
+    private CameraPlayerController cameraPlayerController;
 
     private Vector3 movingSpawn = new Vector3();
 
@@ -49,6 +50,7 @@ public class PapermateBody : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
+        cameraPlayerController = Camera.main.gameObject.GetComponent<CameraPlayerController>();
         leftSpriteOff = Resources.Load<Sprite>("Textures/leftButtonOff");
         rightSpriteOff = Resources.Load<Sprite>("Textures/rightButtonOff");
         leftSpriteOn = Resources.Load<Sprite>("Textures/leftButtonOn");
@@ -351,6 +353,7 @@ public class PapermateBody : MonoBehaviour
         {
             joint.GetComponent<Rigidbody2D>().isKinematic = true;
             joint.GetComponent<Rigidbody2D>().simulated = false;
+            cameraPlayerController.updateTime = false;
         }
     }
 }
