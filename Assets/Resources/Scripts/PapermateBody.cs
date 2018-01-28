@@ -68,7 +68,7 @@ public class PapermateBody : MonoBehaviour
         {
 
             GameObject joint = new GameObject("joint_" + i);
-            joint.transform.localPosition = new Vector3(transform.position.x, transform.position.y + (segLen * i), transform.position.z);
+            joint.transform.localPosition = new Vector3(transform.position.x + (segLen * i), transform.position.y , transform.position.z);
             joint.layer = LayerMask.NameToLayer("Nonattachable");
             joint.transform.SetParent(transform);
 
