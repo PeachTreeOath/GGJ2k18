@@ -555,7 +555,7 @@ GameObject:
   - component: {fileID: 61717987282629730}
   - component: {fileID: 114791182933535660}
   m_Layer: 0
-  m_Name: WindZone (3)
+  m_Name: WindZone (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -903,6 +903,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1947694614413918
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4079650321009844}
+  - component: {fileID: 61466338962367222}
+  - component: {fileID: 114282975337163954}
+  m_Layer: 0
+  m_Name: WindZone (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1957501808887382
 GameObject:
   m_ObjectHideFlags: 1
@@ -1009,6 +1026,20 @@ Transform:
   m_Father: {fileID: 4592719652106280}
   m_RootOrder: 26
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4079650321009844
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1947694614413918}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -28.2, y: 61.9, z: 0}
+  m_LocalScale: {x: 11.893699, y: 36.253075, z: 3.9305499}
+  m_Children:
+  - {fileID: 4978902148389988}
+  m_Father: {fileID: 4592719652106280}
+  m_RootOrder: 43
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4108975474012136
 Transform:
   m_ObjectHideFlags: 1
@@ -1042,12 +1073,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1671973523924116}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -28.2, y: 61.9, z: 0}
-  m_LocalScale: {x: 11.893699, y: 36.253075, z: 3.9305499}
-  m_Children:
-  - {fileID: 4978902148389988}
+  m_LocalPosition: {x: 2, y: 38, z: 0}
+  m_LocalScale: {x: 33.74842, y: 10.875514, z: 3.9305499}
+  m_Children: []
   m_Father: {fileID: 4592719652106280}
-  m_RootOrder: 43
+  m_RootOrder: 52
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4141405069699018
 Transform:
@@ -1468,7 +1498,7 @@ Transform:
   - {fileID: 4895952986673952}
   - {fileID: 4297824287150068}
   - {fileID: 4295508737906640}
-  - {fileID: 4125250657483878}
+  - {fileID: 4079650321009844}
   - {fileID: 4252624169441064}
   - {fileID: 4108975474012136}
   - {fileID: 4548126593819480}
@@ -1477,6 +1507,7 @@ Transform:
   - {fileID: 4812482654123240}
   - {fileID: 4552760820211930}
   - {fileID: 4390164306459434}
+  - {fileID: 4125250657483878}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1751,7 +1782,7 @@ Transform:
   m_LocalPosition: {x: 0.34, y: -0.431, z: 0}
   m_LocalScale: {x: 1, y: -1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4125250657483878}
+  m_Father: {fileID: 4079650321009844}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4993672213740960
@@ -2492,6 +2523,31 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!61 &61466338962367222
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1947694614413918}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!61 &61484473123220386
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -2767,6 +2823,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 6, y: 6}
   m_EdgeRadius: 0
+--- !u!114 &114282975337163954
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1947694614413918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2704f844603d3b645bdf16498f4dbd66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: {x: 0, y: 1}
+  windSpeed: 50
 --- !u!114 &114314239011203038
 MonoBehaviour:
   m_ObjectHideFlags: 1
