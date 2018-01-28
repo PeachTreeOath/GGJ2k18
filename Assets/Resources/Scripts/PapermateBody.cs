@@ -343,4 +343,12 @@ public class PapermateBody : MonoBehaviour
         _lineRenderer.SetPositions(_joints.Select(j => (j.transform.position + zLineOffset))
                                    .ToArray());
     }
+
+    public void FreezeBody()
+    {
+        foreach(GameObject joint in _joints)
+        {
+            joint.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+    }
 }
