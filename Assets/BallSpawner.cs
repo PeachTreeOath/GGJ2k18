@@ -7,6 +7,7 @@ public class BallSpawner : MonoBehaviour {
     public float spawnRateInSecs;
     public int maxBalls;
     public GameObject[] ballPrefabs;
+    public Vector2 startVelocity;
 
     private int currentBalls;
     private float timeSinceLastSpawn;
@@ -36,8 +37,8 @@ public class BallSpawner : MonoBehaviour {
             currentBalls++;
             int randPrefabIndex = Random.Range(0, ballPrefabs.Length);
             GameObject ball = Instantiate<GameObject>(ballPrefabs[randPrefabIndex], transform);
+            ball.GetComponent<Rigidbody2D>().AddForce(startVelocity, ForceMode2D.Impulse);
             balls.Enqueue(ball);
-
         }
 	}
 }

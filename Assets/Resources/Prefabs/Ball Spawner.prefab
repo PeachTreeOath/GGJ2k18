@@ -52,12 +52,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91733e4f21cf34a4f8eea845d165f890, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRateInSecs: 0.25
-  maxBalls: 10
+  spawnRateInSecs: 3
+  maxBalls: 15
   ballPrefabs:
-  - {fileID: 1547780161539814, guid: b27867e1e802e034b9dfa9914e76636d, type: 2}
+  - {fileID: 1918768897703830, guid: 0f2866c522314ef41bb1e468b6143f72, type: 2}
   - {fileID: 1530876244339592, guid: 5935a420f508e514390f5aaa403cdd9d, type: 2}
   - {fileID: 1916705885042724, guid: 71db9c02ddb6f9e428e18930a1d5429e, type: 2}
+  startVelocity: {x: 10, y: -10}
 --- !u!212 &212021458690553282
 SpriteRenderer:
   m_ObjectHideFlags: 1
