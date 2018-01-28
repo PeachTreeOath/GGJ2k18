@@ -213,6 +213,7 @@ GameObject:
   - component: {fileID: 212440764801531298}
   - component: {fileID: 50869037799474154}
   - component: {fileID: 61618673108261842}
+  - component: {fileID: 114647050377654838}
   m_Layer: 0
   m_Name: GirlWall
   m_TagString: Untagged
@@ -586,13 +587,13 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1859956231382874}
-  m_BodyType: 2
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 08bdca51e31aa5f44bd23c9ee7de8efb, type: 2}
   m_Interpolate: 0
@@ -731,7 +732,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.5151062, y: 0.5151367}
+  m_Offset: {x: -0.5151062, y: -2.07}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -742,7 +743,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 10.181274, y: 12.556091}
+  m_Size: {x: 10.181274, y: 6.69}
   m_EdgeRadius: 0
 --- !u!61 &61677745641829360
 BoxCollider2D:
@@ -869,6 +870,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 11.42, y: 19.31}
   m_EdgeRadius: 0
+--- !u!114 &114647050377654838
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1859956231382874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f277294f88b2ba14388c55b3753035df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212060190762613998
 SpriteRenderer:
   m_ObjectHideFlags: 1

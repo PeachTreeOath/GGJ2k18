@@ -6,7 +6,7 @@ public class WinZone : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D col)
     {
-        WinTrigger win = GetComponent<WinTrigger>();
+        WinTrigger win = col.GetComponent<WinTrigger>();
         if(win != null)
         {
             StartVictory();

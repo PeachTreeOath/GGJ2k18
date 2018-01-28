@@ -79,6 +79,7 @@ public class PapermateBody : MonoBehaviour
 
             joint.layer = LayerMask.NameToLayer("Nonattachable");
             joint.transform.SetParent(transform);
+            joint.AddComponent<WinTrigger>();
 
             CapsuleCollider2D capsuleCollider = joint.AddComponent<CapsuleCollider2D>();
             capsuleCollider.size = new Vector2(0.21f, 0.6f);
@@ -348,7 +349,8 @@ public class PapermateBody : MonoBehaviour
     {
         foreach(GameObject joint in _joints)
         {
-            joint.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+            joint.GetComponent<Rigidbody2D>().isKinematic = true;
+            joint.GetComponent<Rigidbody2D>().simulated = false;
         }
     }
 }
