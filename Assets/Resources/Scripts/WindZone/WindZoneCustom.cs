@@ -18,19 +18,19 @@ public class WindZoneCustom : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Paper has entered the DAAAAAANGER Zone");
+        //Debug.Log("Paper has entered the DAAAAAANGER Zone");
     }
 
     void OnTriggerStay2D(Collider2D other)
     {
-        Debug.Log("DANGER ZONE");
+        //Debug.Log("DANGER ZONE");
         Rigidbody2D rigidBody = other.GetComponent<Rigidbody2D>();
         rigidBody.AddForce(direction * windSpeed);
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-        Debug.Log("Paper has left the DAAAAANNNNGER Zone");
+     //   Debug.Log("Paper has left the DAAAAANNNNGER Zone");
     }
 
 

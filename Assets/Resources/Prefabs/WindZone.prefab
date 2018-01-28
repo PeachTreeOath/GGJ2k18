@@ -52,8 +52,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1214904326040436}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 73.5, y: 8.3, z: 0}
-  m_LocalScale: {x: 31.444427, y: 18.080542, z: 3.9305525}
+  m_LocalPosition: {x: 52.9, y: 96.7, z: 0}
+  m_LocalScale: {x: 14.54305, y: 115.03745, z: 3.9305525}
   m_Children:
   - {fileID: 4430817479285184}
   m_Father: {fileID: 0}
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2704f844603d3b645bdf16498f4dbd66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: {x: 0, y: 1}
+  direction: {x: 0, y: -1}
   windSpeed: 50
 --- !u!198 &198553216207029992
 ParticleSystem:
@@ -170,7 +170,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -548196148
+  randomSeed: 603033950
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -1270,7 +1270,7 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.5
+      scalar: -1.5
       minScalar: 0
       maxCurve:
         serializedVersion: 2
