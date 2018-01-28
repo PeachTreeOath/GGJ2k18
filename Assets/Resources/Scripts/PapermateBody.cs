@@ -76,6 +76,7 @@ public class PapermateBody : MonoBehaviour
             joint.transform.localPosition = new Vector3(transform.position.x, transform.position.y + (segLen * i), transform.position.z);
             if (unCrinkle)
                 joint.transform.localPosition = new Vector3(movingSpawn.x, movingSpawn.y + (segLen * i), movingSpawn.z);
+
             joint.layer = LayerMask.NameToLayer("Nonattachable");
             joint.transform.SetParent(transform);
 
