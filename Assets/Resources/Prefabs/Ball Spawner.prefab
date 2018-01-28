@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnRateInSecs: 3
-  maxBalls: 15
+  maxBalls: 8
   ballPrefabs:
   - {fileID: 1918768897703830, guid: 0f2866c522314ef41bb1e468b6143f72, type: 2}
   - {fileID: 1530876244339592, guid: 5935a420f508e514390f5aaa403cdd9d, type: 2}
