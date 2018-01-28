@@ -42,6 +42,8 @@ public class PapermateBody : MonoBehaviour
     private Sprite leftSpriteOn;
     private Sprite rightSpriteOn;
 
+    private Vector3 movingSpawn = new Vector3();
+
     float time = 0f;
 
     // Use this for initialization
@@ -62,7 +64,7 @@ public class PapermateBody : MonoBehaviour
     }
 
     // used to build out the physics body and joints of papermate
-    private void InitializeBody()
+    private void InitializeBody(bool unCrinkle = false)
     {
         float segLen = unitLength / (float)jointCount;
         _joints = new List<GameObject>();
@@ -72,6 +74,8 @@ public class PapermateBody : MonoBehaviour
 
             GameObject joint = new GameObject("joint_" + i);
             joint.transform.localPosition = new Vector3(transform.position.x, transform.position.y + (segLen * i), transform.position.z);
+            if (unCrinkle)
+                joint.transform.localPosition = new Vector3(movingSpawn.x, movingSpawn.y + (segLen * i), movingSpawn.z);
             joint.layer = LayerMask.NameToLayer("Nonattachable");
             joint.transform.SetParent(transform);
 
@@ -206,6 +210,7 @@ public class PapermateBody : MonoBehaviour
         rightSprite.transform.position = _joints.Last().transform.position + _offsetVector;
         leftSprite.transform.rotation = Quaternion.identity;
         rightSprite.transform.rotation = Quaternion.identity;
+        movingSpawn = _joints[0].transform.position;
     }
 
     private void LateUpdate()
@@ -280,47 +285,16 @@ public class PapermateBody : MonoBehaviour
 
     private void Uncrinkle()
     {
-        StartCoroutine(SteamPress());
+        foreach (GameObject obj in _joints)
+            DestroyImmediate(obj);
+        _joints.Clear();
+        InitializeBody(true);
+        CameraPlayerController camera = FindObjectOfType<CameraPlayerController>();
+        camera.mainPlayer = _joints[jointCount / 2].gameObject;
+
     }
 
-    IEnumerator SteamPress()
-    {
-        while (time < 3)
-        {
-            time += Time.deltaTime;
-            foreach (GameObject joint in _joints)
-            {
-                Collider2D[] colliders = joint.GetComponents<Collider2D>();
-                foreach (Collider2D collider in colliders)
-                {
-                    collider.enabled = false;
-                }
 
-                Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
-                rb.gravityScale = 0;
-            }
-
-            _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(-10, 0));
-            _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(10, 0));
-        }
-        yield return 0;
-        if (time >= 3f)
-        { 
-            time = 0;
-            foreach (GameObject joint in _joints)
-            {
-                Collider2D[] colliders = joint.GetComponents<Collider2D>();
-                foreach (Collider2D collider in colliders)
-                {
-                    collider.enabled = true;
-
-                }
-
-                Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
-                rb.gravityScale = 1;
-            }
-        }   
-    }
 
     
     private void toggleCheatMode()
