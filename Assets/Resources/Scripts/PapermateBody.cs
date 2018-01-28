@@ -153,18 +153,18 @@ public class PapermateBody : MonoBehaviour
             _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightSprite, false);
         else if (Input.GetButtonUp("KeyGrabRight"))
             UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightSprite, _rightGrabJoint, false);
-
-        if (Input.GetButtonDown("KeyGrabRight"))
-        {
-            if (_rightGrabJoint == null)
-                _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, leftSprite, true);
-        }
-        else if (Input.GetButtonUp("KeyGrabRight"))
-        {
-            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightSprite, _rightGrabJoint, false);
-            _rightGrabJoint = null;
-        }
-
+        /*
+                if (Input.GetButtonDown("KeyGrabRight"))
+                {
+                    if (_rightGrabJoint == null)
+                        _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, leftSprite, true);
+                }
+                else if (Input.GetButtonUp("KeyGrabRight"))
+                {
+                    UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightSprite, _rightGrabJoint, false);
+                    _rightGrabJoint = null;
+                }
+        */
         if (Input.GetButtonDown("CheatModeButton"))
             toggleCheatMode();
         if (Input.GetButtonDown("UnwrinkleButton"))
