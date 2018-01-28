@@ -351,9 +351,14 @@ public class PapermateBody : MonoBehaviour
     {
         foreach(GameObject joint in _joints)
         {
-            joint.GetComponent<Rigidbody2D>().isKinematic = true;
-            joint.GetComponent<Rigidbody2D>().simulated = false;
+
             cameraPlayerController.updateTime = false;
+
+            Destroy(leftSprite.gameObject);
+            Destroy(rightSprite.gameObject);
+            Destroy(joint);
+            Destroy(gameObject);
+
         }
     }
 }

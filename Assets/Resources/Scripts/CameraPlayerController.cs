@@ -16,6 +16,7 @@ public class CameraPlayerController : MonoBehaviour
     float secPerBeat = 0.46875f;
     float timer = 0;
     bool feelinTheBeat = true;
+    public Font GucciGoldFont;
    public  bool updateTime = true;
 
     PostProcessVolume volume;
@@ -64,7 +65,8 @@ public class CameraPlayerController : MonoBehaviour
         {
             feelinTheBeat = !feelinTheBeat;
         }
-        timer += Time.deltaTime;
+        if(updateTime)
+            timer += Time.deltaTime;
     }
 
     IEnumerator ZoomIn()
@@ -89,7 +91,10 @@ public class CameraPlayerController : MonoBehaviour
         int minutes = Mathf.FloorToInt(timer / 60F);
         int seconds = Mathf.FloorToInt(timer - minutes * 60);
         string niceTime = string.Format("{0:0}:{1:00}", minutes, seconds);
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 20;
+        
 
-         GUI.Label(new Rect(10, 10, 250, 100), niceTime);
+         GUI.Label(new Rect(15, 10, 250, 100), niceTime, style);
     }
 }
