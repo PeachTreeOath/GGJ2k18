@@ -5324,6 +5324,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 212494801227552902}
+  winSprite: {fileID: 21300000, guid: 49ef36df411de024290a5fd378e6c4d7, type: 3}
+  loseSprite: {fileID: 21300000, guid: 915d86347b5365a45b030d481d848770, type: 3}
+  cpc: {fileID: 0}
 --- !u!212 &212025288672562078
 SpriteRenderer:
   m_ObjectHideFlags: 1
