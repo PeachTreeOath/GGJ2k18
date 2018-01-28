@@ -177,7 +177,11 @@ public class PapermateBody : MonoBehaviour
             toggleCheatMode();
         if (Input.GetButtonDown("UnwrinkleButton"))
             Uncrinkle();
+        if (Input.GetButtonDown("ResetGame"))
+            Application.LoadLevel(0);
         UpdateLineRendererPositions();
+
+
 
         // apply special upward force when you are parallel
         Vector2 vel = _joints.First().GetComponent<Rigidbody2D>().velocity;
