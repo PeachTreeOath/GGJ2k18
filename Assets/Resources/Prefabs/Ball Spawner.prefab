@@ -57,6 +57,7 @@ MonoBehaviour:
   ballPrefabs:
   - {fileID: 1547780161539814, guid: b27867e1e802e034b9dfa9914e76636d, type: 2}
   - {fileID: 1530876244339592, guid: 5935a420f508e514390f5aaa403cdd9d, type: 2}
+  - {fileID: 1916705885042724, guid: 71db9c02ddb6f9e428e18930a1d5429e, type: 2}
 --- !u!212 &212021458690553282
 SpriteRenderer:
   m_ObjectHideFlags: 1
