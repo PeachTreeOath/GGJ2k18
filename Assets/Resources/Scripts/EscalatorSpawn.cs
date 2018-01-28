@@ -38,8 +38,7 @@ public class EscalatorSpawn : MonoBehaviour {
 		}
 		
 		//Create new steps
-		Debug.Log(steps[steps.Count - 1].transform.position.x);
-		Debug.Log(last.transform.position.x);
+
 		if(steps[steps.Count - 1].transform.position.x > last.transform.position.x + last.GetComponent<Renderer>().bounds.size.x)
 		{
 			GenerateStep();
