@@ -108,7 +108,7 @@ public class PapermateBody : MonoBehaviour
             if (i == 0)
             {
                 leftCollider = joint.AddComponent<CircleCollider2D>();
-                leftCollider.radius = _radius * 1.5f;
+                leftCollider.radius = _radius * 2f;
                 leftCollider.isTrigger = true;
                 body.mass = 10f;
                 capsuleCollider.offset = new Vector2(0, 0.1f);
@@ -118,7 +118,7 @@ public class PapermateBody : MonoBehaviour
             if (i == jointCount - 1)
             {
                 rightCollider = joint.AddComponent<CircleCollider2D>();
-                rightCollider.radius = _radius * 1.5f;
+                rightCollider.radius = _radius * 2f;
                 rightCollider.isTrigger = true;
                 body.mass = 10f;
                 capsuleCollider.offset = new Vector2(0, -0.1f);
