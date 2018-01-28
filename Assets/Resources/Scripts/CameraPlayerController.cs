@@ -15,7 +15,7 @@ public class CameraPlayerController : MonoBehaviour
     float beatTimer = 0f;
     float secPerBeat = 0.46875f;
 
-    bool feelinTheBeat = false;
+    bool feelinTheBeat = true;
 
     PostProcessVolume volume;
     Vignette vignette;
