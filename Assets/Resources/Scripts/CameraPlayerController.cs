@@ -14,7 +14,7 @@ public class CameraPlayerController : MonoBehaviour
     AudioSource musicSource;
     float beatTimer = 0f;
     float secPerBeat = 0.46875f;
-    float timer = 0;
+   public  float timer = 0;
     bool feelinTheBeat = true;
     public Font GucciGoldFont;
    public  bool updateTime = true;
