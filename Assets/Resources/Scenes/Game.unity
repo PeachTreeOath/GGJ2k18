@@ -340,11 +340,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 114647050377654838, guid: 694ed8d003e2efe4585dcad5700f3f95,
-        type: 2}
-      propertyPath: sprite
-      value: 
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 694ed8d003e2efe4585dcad5700f3f95, type: 2}
   m_IsPrefabParent: 0
@@ -399,11 +394,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4793841855556934, guid: a011e9beb94241e439e693dc702e4281, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -1.59
+      value: 270.9
       objectReference: {fileID: 0}
     - target: {fileID: 4793841855556934, guid: a011e9beb94241e439e693dc702e4281, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 2.38
+      value: 279
       objectReference: {fileID: 0}
     - target: {fileID: 4793841855556934, guid: a011e9beb94241e439e693dc702e4281, type: 2}
       propertyPath: m_LocalPosition.z
