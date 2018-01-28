@@ -14,7 +14,7 @@ TagManager:
   - 
   - 
   - Nonattachable
-  - Grabbable
+  - 
   - 
   - 
   - 
@@ -39,7 +39,7 @@ TagManager:
   - 
   m_SortingLayers:
   - name: BG
-    uniqueID: 621247387
+    uniqueID: 3501146569
     locked: 0
   - name: Default
     uniqueID: 0
