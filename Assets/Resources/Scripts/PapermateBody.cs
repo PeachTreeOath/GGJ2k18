@@ -178,7 +178,7 @@ public class PapermateBody : MonoBehaviour
         if (Input.GetButtonDown("UnwrinkleButton"))
             Uncrinkle();
         if (Input.GetButtonDown("ResetGame"))
-            toggleCheatMode();
+            Application.LoadLevel(0);
         UpdateLineRendererPositions();
 
 
