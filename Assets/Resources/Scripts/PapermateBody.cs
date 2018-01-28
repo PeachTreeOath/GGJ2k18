@@ -270,6 +270,8 @@ public class PapermateBody : MonoBehaviour
             DistanceJoint2D distJt = rigidBody.gameObject.AddComponent<DistanceJoint2D>();
             distJt.connectedBody = results[0].attachedRigidbody;
             distJt.connectedAnchor = results[0].transform.InverseTransformPoint(rigidBody.transform.position);
+            distJt.autoConfigureDistance = false;
+            distJt.distance = 0.01f;
             return distJt;
         }
         return null;
