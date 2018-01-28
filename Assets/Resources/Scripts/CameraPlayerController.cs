@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 /// <summary>
 /// Simple camera controller to follow the player.
@@ -16,9 +17,18 @@ public class CameraPlayerController : MonoBehaviour
 
     bool feelinTheBeat = false;
 
+    PostProcessVolume volume;
+    Vignette vignette;
+
     void Start()
     {
         musicSource = GameObject.Find("Level").GetComponent<AudioSource>();
+        vignette = ScriptableObject.CreateInstance<Vignette>();
+        vignette.enabled.Override(true);
+        vignette.intensity.Override(0f);
+        vignette.color.Override(new Color(Random.value, Random.value, Random.value));
+
+        volume = PostProcessManager.instance.QuickVolume(gameObject.layer, 100f, vignette);
     }
 
     // Update is called once per frame
@@ -41,8 +51,9 @@ public class CameraPlayerController : MonoBehaviour
                 beatTimer = 0f;
                 if (feelinTheBeat)
                 {
-                    Debug.Log("feel the beat");
-                    Camera.main.orthographicSize = 4.5f;
+                    Camera.main.orthographicSize = 4.8f;
+                    vignette.intensity.value = 0.6f;
+                    vignette.color.value = new Color(Random.value, Random.value, Random.value, 0.3f);
                     StartCoroutine(ZoomIn());
                 }
             }
@@ -57,6 +68,7 @@ public class CameraPlayerController : MonoBehaviour
     IEnumerator ZoomIn()
     {
         float start = Camera.main.orthographicSize;
+        float startVignette = vignette.intensity.value;
         float goal = 5f;
         float length = 0.35f;
         float time = 0f;
@@ -64,7 +76,8 @@ public class CameraPlayerController : MonoBehaviour
         {
             time += Time.deltaTime;
             float t = Mathf.Sin(time * Mathf.PI * 0.5f);
-            Camera.main.orthographicSize = Mathf.Lerp(start, goal, time / length);
+            Camera.main.orthographicSize = Mathf.Lerp(start, goal, t / length);
+            vignette.intensity.value = Mathf.Lerp(startVignette, 0f, t / length);
             yield return null;
         }
     }
