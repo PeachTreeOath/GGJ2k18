@@ -1810,7 +1810,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!1001 &1103290664
+--- !u!1001 &1181626163
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
