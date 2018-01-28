@@ -14,8 +14,10 @@ public class CameraPlayerController : MonoBehaviour
     AudioSource musicSource;
     float beatTimer = 0f;
     float secPerBeat = 0.46875f;
-
+    float timer = 0;
     bool feelinTheBeat = true;
+    public Font GucciGoldFont;
+   public  bool updateTime = true;
 
     PostProcessVolume volume;
     Vignette vignette;
@@ -63,6 +65,8 @@ public class CameraPlayerController : MonoBehaviour
         {
             feelinTheBeat = !feelinTheBeat;
         }
+        if(updateTime)
+            timer += Time.deltaTime;
     }
 
     IEnumerator ZoomIn()
@@ -80,5 +84,19 @@ public class CameraPlayerController : MonoBehaviour
             vignette.intensity.value = Mathf.Lerp(startVignette, 0f, t / length);
             yield return null;
         }
+    }
+
+    void OnGUI()
+    {
+        int minutes = Mathf.FloorToInt(timer / 60F);
+        int seconds = Mathf.FloorToInt(timer - minutes * 60);
+        string niceTime = string.Format("{0:00}:{1:00}", minutes, seconds);
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 20;  
+        style.font = GucciGoldFont;
+        style.normal.textColor = new Color(0.15f, 0.15f, 0.15f);
+
+
+         GUI.Label(new Rect(15, 10, 250, 100), niceTime, style);
     }
 }
