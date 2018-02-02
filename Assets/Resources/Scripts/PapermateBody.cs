@@ -144,73 +144,49 @@ public class PapermateBody : MonoBehaviour
         // can only apply forces if we are touching a physics body
         bool amIGrounded = IsPaperGrounded();
         float framePower = amIGrounded ? power : airPower;
+		Rigidbody2D leftBody = _joints.First().GetComponent<Rigidbody2D>();
+		Rigidbody2D rightBody = _joints.Last().GetComponent<Rigidbody2D>();
+
+        // left end handling
         float h1 = Input.GetAxis("J_LeftStickX");
         float v1 = Input.GetAxis("J_LeftStickY");
-        _joints.First().GetComponent<Rigidbody2D>().AddForce(new Vector2(h1 * framePower, v1 * framePower));
-
-        float h2 = Input.GetAxis("J_RightStickX");
-        float v2 = Input.GetAxis("J_RightStickY");
-        _joints.Last().GetComponent<Rigidbody2D>().AddForce(new Vector2(h2 * framePower, v2 * framePower));
+        leftBody.AddForce(new Vector2(h1 * framePower, v1 * framePower));
 
         if (Input.GetButtonDown("KeyGrabLeft"))
-            _leftGrabJoint = LockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftCollider, leftSprite, true);
+            _leftGrabJoint = LockJoint(leftBody, leftCollider, leftSprite, true);
         else if (Input.GetButtonUp("KeyGrabLeft"))
-            UnlockJoint(_joints.First().GetComponent<Rigidbody2D>(), leftSprite, _leftGrabJoint, true);
+            UnlockJoint(leftBody, leftSprite, _leftGrabJoint, true);
+
+        // right end handling
+        float h2 = Input.GetAxis("J_RightStickX");
+        float v2 = Input.GetAxis("J_RightStickY");
+        rightBody.AddForce(new Vector2(h2 * framePower, v2 * framePower));
 
         if (Input.GetButtonDown("KeyGrabRight"))
-            _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, rightSprite, false);
+            _rightGrabJoint = LockJoint(rightBody, rightCollider, rightSprite, false);
         else if (Input.GetButtonUp("KeyGrabRight"))
-            UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightSprite, _rightGrabJoint, false);
-        /*
-                if (Input.GetButtonDown("KeyGrabRight"))
-                {
-                    if (_rightGrabJoint == null)
-                        _rightGrabJoint = LockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightCollider, leftSprite, true);
-                }
-                else if (Input.GetButtonUp("KeyGrabRight"))
-                {
-                    UnlockJoint(_joints.Last().GetComponent<Rigidbody2D>(), rightSprite, _rightGrabJoint, false);
-                    _rightGrabJoint = null;
-                }
-        */
+            UnlockJoint(rightBody, rightSprite, _rightGrabJoint, false);
+
+        // special keys
         if (Input.GetButtonDown("CheatModeButton"))
             toggleCheatMode();
         if (Input.GetButtonDown("UnwrinkleButton"))
             Uncrinkle();
         if (Input.GetButtonDown("ResetGame"))
             Application.LoadLevel(0);
+
+        // update graphic positions
         UpdateLineRendererPositions();
 
-
-
-        // apply special upward force when you are parallel
-        Vector2 vel = _joints.First().GetComponent<Rigidbody2D>().velocity;
+        // apply special upward force when you are falling
+        Vector2 vel = leftBody.velocity;
         if (!amIGrounded && vel.y < 0)
         {
-            Transform left, right;
-            if (_joints.Last().transform.position.x >= _joints.First().transform.position.x)
-            {
-                right = _joints.Last().transform;
-                left = _joints.First().transform;
-            }
-            else
-            {
-                left = _joints.Last().transform;
-                right = _joints.First().transform;
-            }
+            Vector2 upLift = GetLiftFromEndpoints(leftBody.position,
+                                                  rightBody.position, vel);
 
-            // find the ratio of horizontal to vertical spread
-            float distance = Vector3.Distance(left.position, right.position);
-            float horiz = Mathf.Abs(right.position.x - left.position.x);
-            float hRatio = horiz / distance;
-            float vert = left.position.y - right.position.y;
-            float vRatio = vert / distance;
-            float vertMove = Mathf.Abs(vel.x) > glideVelocityMax && Mathf.Sign(vel.x) == Mathf.Sign(vRatio) ? 0f : Mathf.Sign(vRatio) * 100 * hRatio;
-            Vector3 currentUpLift = new Vector3(vertMove, Mathf.Abs(vel.y * upwardLift * hRatio), 0f);
-
-            // apply the upward lift to each point
-            _joints.First().GetComponent<Rigidbody2D>().AddForce(currentUpLift);
-            _joints.Last().GetComponent<Rigidbody2D>().AddForce(currentUpLift);
+            leftBody.AddForce(upLift);
+            rightBody.AddForce(upLift);
         }
 
         // render the correct location for each label
@@ -304,9 +280,6 @@ public class PapermateBody : MonoBehaviour
 
     }
 
-
-
-    
     private void toggleCheatMode()
     {
         cheatModeEnabled = !cheatModeEnabled;
@@ -349,6 +322,29 @@ public class PapermateBody : MonoBehaviour
     {
         _lineRenderer.SetPositions(_joints.Select(j => (j.transform.position + zLineOffset))
                                    .ToArray());
+    }
+
+    private Vector2 GetLiftFromEndpoints(Vector2 pos1, Vector2 pos2, Vector2 vel)
+    {
+        bool nonFlipped = pos1.x < pos2.x;
+        Vector2 left = nonFlipped ? pos1 : pos2;
+        Vector2 right = nonFlipped ? pos2 : pos1;
+
+        // find the ratio of horizontal to vertical spread
+        float distance = Vector2.Distance(left, right);
+        float horiz = Mathf.Abs(right.x - left.x);
+        float hRatio = horiz / distance;
+
+        float vert = left.y - right.y;
+        float vRatio = vert / distance;
+        float horizForce = Mathf.Abs(vel.x) > glideVelocityMax && // exceeding max glide speed
+                                vel.x * vRatio >= 0 ? // tilting in direction of motion
+                                0f : Mathf.Sign(vRatio) * 100 * hRatio;
+
+        float vertForce = Mathf.Abs(vel.y * upwardLift * hRatio);
+
+        // apply the upward lift to each point
+        return new Vector2(horizForce, vertForce);
     }
 
     public void FreezeBody()
