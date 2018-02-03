@@ -31,6 +31,4 @@ public class WindZoneCustom : MonoBehaviour {
     {
      //   Debug.Log("Paper has left the DAAAAANNNNGER Zone");
     }
-
-
 }

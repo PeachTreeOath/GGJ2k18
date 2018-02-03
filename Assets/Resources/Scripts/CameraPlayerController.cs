@@ -8,15 +8,15 @@ using UnityEngine.Rendering.PostProcessing;
 public class CameraPlayerController : MonoBehaviour
 {
     public GameObject mainPlayer; // the player to follow on screen
-	public Font gucciGoldFont; // the font to use for the UI
+    public Font gucciGoldFont; // the font to use for the UI
 
     public bool updateTime = true; // For debug: stops timer when false
     public bool doThatDisco = true; // Show colored vignette to beat
     public bool feelinTheBeat = true; // Zoom camera to beat
 
-	public float zRange = -10f; // distance from the player content
-	public float cameraSpeed = 10f; // how responsive the camera should be to motion
-	public float beatsPerMinute = 128f; // music speed
+    public float zRange = -10f; // distance from the player content
+    public float cameraSpeed = 10f; // how responsive the camera should be to motion
+    public float beatsPerMinute = 128f; // music speed
     public float beatResizePercent = .99f; // the zoomed in camera size as percentage of original
     public float vignetteOpacityPercent = 1.00f; // how much color to show
     public float vignetteIntenityPercent = .30f; // how far the vignette should encroach
@@ -28,7 +28,7 @@ public class CameraPlayerController : MonoBehaviour
     private float _zoomedCamSize; // the size to show when zooming with the beat
 
     private PostProcessVolume _volume; // triggers vignette changes
-	private AudioSource _musicSource; // cue music
+    private AudioSource _musicSource; // cue music
     private Vignette _vignette; // shows colored outline on camera
     private GUIStyle _style; // used to style text for UI
 

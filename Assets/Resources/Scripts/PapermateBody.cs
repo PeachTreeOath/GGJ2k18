@@ -68,7 +68,7 @@ public class PapermateBody : MonoBehaviour
     // used to build out the physics body and joints of papermate
     private void InitializeBody(bool unCrinkle = false)
     {
-		Rigidbody2D prevBody = null;
+        Rigidbody2D prevBody = null;
         _joints = new List<GameObject>();
 
         float segLen = paperLength / (float)jointCount;
