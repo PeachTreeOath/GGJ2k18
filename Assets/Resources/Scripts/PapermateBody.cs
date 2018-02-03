@@ -88,6 +88,7 @@ public class PapermateBody : MonoBehaviour
             capsuleCollider.size = new Vector2(0.21f, 0.6f);
 
             Rigidbody2D body = joint.AddComponent<Rigidbody2D>();
+            body.centerOfMass = Vector3.zero;
             body.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             body.interpolation = RigidbodyInterpolation2D.Interpolate;
 
