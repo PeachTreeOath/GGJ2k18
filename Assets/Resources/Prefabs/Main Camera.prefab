@@ -100,12 +100,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainPlayer: {fileID: 0}
-  zRange: -10
-  cameraSpeed: 10
-  GucciGoldFont: {fileID: 12800000, guid: cf57ee8e82376b94799dfa85267e1bdd, type: 3}
+  gucciGoldFont: {fileID: 12800000, guid: cf57ee8e82376b94799dfa85267e1bdd, type: 3}
   updateTime: 1
   doThatDisco: 1
   feelinTheBeat: 1
+  zRange: -10
+  cameraSpeed: 10
+  beatsPerMinute: 128
   beatResizePercent: 0.99
   vignetteOpacityPercent: 1
   vignetteIntenityPercent: 0.3
