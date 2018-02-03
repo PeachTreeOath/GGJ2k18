@@ -16,7 +16,7 @@ public class EscalatorSpawn : MonoBehaviour
 
     private Vector3 _firstLoc; // position of source
     private Vector3 _direction; // normalized direction to sink
-	private List<GameObject> steps = new List<GameObject>(); // used as a queue
+    private List<GameObject> steps = new List<GameObject>(); // used as a queue
 
     // Use this for initialization
     void Start()
@@ -33,7 +33,7 @@ public class EscalatorSpawn : MonoBehaviour
 
         // generate steps in reverse to generate furthest out stair first
         for (int i = numStairs - 1; i >= 0; i--)
-        {     
+        {
             GenerateStep(_firstLoc + (i * spawnDirection));
         }
     }
@@ -56,7 +56,7 @@ public class EscalatorSpawn : MonoBehaviour
             Destroy(oldestStep);
         }
 
-        // Create new steps if the closest step is outside the spawn distance
+        // Create a new step if the closest step is outside the spawn distance
         if ((steps[steps.Count - 1].transform.position - _firstLoc).magnitude > _spawnDistance)
         {
             GenerateStep(_firstLoc);

@@ -10,7 +10,7 @@ using UnityEngine;
 public class PapermateBody : MonoBehaviour
 {
     public int jointCount = 10;
-    public int unitLength = 4;
+    public int paperLength = 4;
     public float width = 0.2f;
     public float power = 350;
     public float airPower = 20f;
@@ -20,7 +20,7 @@ public class PapermateBody : MonoBehaviour
     public SpriteRenderer leftSprite;
     public SpriteRenderer rightSprite;
 
-    public float labelOffset = 0.25f;
+    public float labelOffset = 0.5f;
     public Color standardTextColor = Color.white;
     public Color pressedTextColor = new Color(1f, 0.6f, 0f);
 
@@ -68,19 +68,19 @@ public class PapermateBody : MonoBehaviour
     // used to build out the physics body and joints of papermate
     private void InitializeBody(bool unCrinkle = false)
     {
-        float segLen = unitLength / (float)jointCount;
+        float segLen = paperLength / (float) jointCount;
         _joints = new List<GameObject>();
         Rigidbody2D prevBody = null;
         for (int i = 0; i < jointCount; i++)
         {
-
             GameObject joint = new GameObject("joint_" + i);
-            joint.transform.localPosition = new Vector3(transform.position.x, transform.position.y + (segLen * i), transform.position.z);
-            if (unCrinkle)
-                joint.transform.localPosition = new Vector3(movingSpawn.x, movingSpawn.y + (segLen * i), movingSpawn.z);
+            Transform jointTransform = joint.transform;
+            jointTransform.localPosition = 
+                (unCrinkle ? movingSpawn : transform.position) + 
+                new Vector3(0, segLen * i, 0);
 
             joint.layer = LayerMask.NameToLayer("Nonattachable");
-            joint.transform.SetParent(transform);
+            jointTransform.SetParent(transform);
             joint.AddComponent<WinTrigger>();
 
             CapsuleCollider2D capsuleCollider = joint.AddComponent<CapsuleCollider2D>();
@@ -91,8 +91,7 @@ public class PapermateBody : MonoBehaviour
             body.interpolation = RigidbodyInterpolation2D.Interpolate;
             if (prevBody != null)
             {
-                DistanceJoint2D distJt = joint.AddComponent<DistanceJoint2D>();
-                distJt.connectedBody = prevBody;
+                joint.AddComponent<DistanceJoint2D>().connectedBody = prevBody;
                 HingeJoint2D hingeJoint = joint.AddComponent<HingeJoint2D>();
                 hingeJoint.useLimits = true;
                 hingeJoint.connectedBody = prevBody;
@@ -144,8 +143,8 @@ public class PapermateBody : MonoBehaviour
         // can only apply forces if we are touching a physics body
         bool amIGrounded = IsPaperGrounded();
         float framePower = amIGrounded ? power : airPower;
-		Rigidbody2D leftBody = _joints.First().GetComponent<Rigidbody2D>();
-		Rigidbody2D rightBody = _joints.Last().GetComponent<Rigidbody2D>();
+        Rigidbody2D leftBody = _joints.First().GetComponent<Rigidbody2D>();
+        Rigidbody2D rightBody = _joints.Last().GetComponent<Rigidbody2D>();
 
         // left end handling
         float h1 = Input.GetAxis("J_LeftStickX");
@@ -178,7 +177,7 @@ public class PapermateBody : MonoBehaviour
         // update graphic positions
         UpdateLineRendererPositions();
 
-        // apply special upward force when you are falling
+        // apply special upward force when falling
         Vector2 vel = leftBody.velocity;
         if (!amIGrounded && vel.y < 0)
         {
@@ -188,19 +187,20 @@ public class PapermateBody : MonoBehaviour
             leftBody.AddForce(upLift);
             rightBody.AddForce(upLift);
         }
-
-        // render the correct location for each label
-        leftSprite.transform.position = _joints.First().transform.position + _offsetVector;
-        rightSprite.transform.position = _joints.Last().transform.position + _offsetVector;
-        leftSprite.transform.rotation = Quaternion.identity;
-        rightSprite.transform.rotation = Quaternion.identity;
-        movingSpawn = _joints[0].transform.position;
     }
 
     private void LateUpdate()
     {
-        leftSprite.transform.position += new Vector3(0, 0.25f, 0);
-        rightSprite.transform.position += new Vector3(0, 0.25f, 0);
+        Transform leftTransform = leftSprite.transform;
+        Transform rightTransform = rightSprite.transform;
+        Vector3 firstPosition = _joints.First().transform.position;
+
+        // render the correct location for each label
+        leftTransform.position = firstPosition + _offsetVector;
+        rightTransform.position = _joints.Last().transform.position + _offsetVector;
+        leftTransform.rotation = Quaternion.identity;
+        rightTransform.rotation = Quaternion.identity;
+        movingSpawn = firstPosition;
     }
 
     /// <summary>
@@ -348,7 +348,7 @@ public class PapermateBody : MonoBehaviour
 
     public void FreezeBody()
     {
-        foreach(GameObject joint in _joints)
+        foreach (GameObject joint in _joints)
         {
 
             cameraPlayerController.updateTime = false;
