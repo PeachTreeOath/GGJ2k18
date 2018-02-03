@@ -152,6 +152,41 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114089606003735672, guid: d3d68bd1618d4c44886be75e9851b4dc,
+        type: 2}
+      propertyPath: feelinTheBeat
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114089606003735672, guid: d3d68bd1618d4c44886be75e9851b4dc,
+        type: 2}
+      propertyPath: vignetteIntenity
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114089606003735672, guid: d3d68bd1618d4c44886be75e9851b4dc,
+        type: 2}
+      propertyPath: vignetteOpacity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114089606003735672, guid: d3d68bd1618d4c44886be75e9851b4dc,
+        type: 2}
+      propertyPath: cameraSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114089606003735672, guid: d3d68bd1618d4c44886be75e9851b4dc,
+        type: 2}
+      propertyPath: doThatDisco
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114089606003735672, guid: d3d68bd1618d4c44886be75e9851b4dc,
+        type: 2}
+      propertyPath: beatZoomPercent
+      value: 0.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 114089606003735672, guid: d3d68bd1618d4c44886be75e9851b4dc,
+        type: 2}
+      propertyPath: beatResizePercent
+      value: 0.99
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d3d68bd1618d4c44886be75e9851b4dc, type: 2}
   m_IsPrefabParent: 0

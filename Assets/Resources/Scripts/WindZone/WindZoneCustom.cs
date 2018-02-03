@@ -14,8 +14,7 @@ public class WindZoneCustom : MonoBehaviour {
     /// </summary>
     public int windSpeed = 50;
 
-    
-
+   
     void OnTriggerEnter2D(Collider2D other)
     {
         //Debug.Log("Paper has entered the DAAAAAANGER Zone");

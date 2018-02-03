@@ -16,7 +16,7 @@ public class EscalatorSpawn : MonoBehaviour
 
     private Vector3 _firstLoc; // position of source
     private Vector3 _direction; // normalized direction to sink
-    private List<GameObject> steps = new List<GameObject>(); // used as a queue
+    private List<GameObject> _steps = new List<GameObject>(); // used as a queue
 
     // Use this for initialization
     void Start()
@@ -31,7 +31,7 @@ public class EscalatorSpawn : MonoBehaviour
         _spawnDistance = _distance / numStairs;
         Vector3 spawnDirection = _spawnDistance * _direction;
 
-        // generate steps in reverse to generate furthest out stair first
+        // generate steps in reverse to generate furthest-out stair first
         for (int i = numStairs - 1; i >= 0; i--)
         {
             GenerateStep(_firstLoc + (i * spawnDirection));
@@ -43,21 +43,18 @@ public class EscalatorSpawn : MonoBehaviour
     {
         //Move the steps
         Vector2 motion = _direction * stairSpeed * Time.deltaTime;
-        foreach (GameObject step in steps)
-        {
-            step.transform.Translate(motion);
-        }
+        _steps.ForEach(step => step.transform.Translate(motion));
 
         //Destroy old steps
-        GameObject oldestStep = steps[0];
+        GameObject oldestStep = _steps[0];
         if ((oldestStep.transform.position - _firstLoc).magnitude > _distance)
         {
-            steps.Remove(oldestStep);
+            _steps.Remove(oldestStep);
             Destroy(oldestStep);
         }
 
         // Create a new step if the closest step is outside the spawn distance
-        if ((steps[steps.Count - 1].transform.position - _firstLoc).magnitude > _spawnDistance)
+        if ((_steps[_steps.Count - 1].transform.position - _firstLoc).magnitude > _spawnDistance)
         {
             GenerateStep(_firstLoc);
         }
@@ -70,6 +67,6 @@ public class EscalatorSpawn : MonoBehaviour
     /// <param name="position">The position to locate the step at</param>
     private void GenerateStep(Vector3 position)
     {
-        steps.Add(Instantiate(stepPrefab, position, Quaternion.identity));
+        _steps.Add(Instantiate(stepPrefab, position, Quaternion.identity));
     }
 }

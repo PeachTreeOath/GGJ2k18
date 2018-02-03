@@ -10495,7 +10495,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numStairs: 8
-  stairSpeed: 3
+  stairSpeed: 1.1
   stepPrefab: {fileID: 1390436371494934, guid: 330c2a6d1ee056f49a5ed91b57df562a, type: 2}
   first: {fileID: 1112489787076038}
   last: {fileID: 1870432385352516}

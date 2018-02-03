@@ -68,16 +68,17 @@ public class PapermateBody : MonoBehaviour
     // used to build out the physics body and joints of papermate
     private void InitializeBody(bool unCrinkle = false)
     {
-        float segLen = paperLength / (float) jointCount;
+		Rigidbody2D prevBody = null;
         _joints = new List<GameObject>();
-        Rigidbody2D prevBody = null;
+
+        float segLen = paperLength / (float)jointCount;
+        Vector3 spawnLoc = unCrinkle ? movingSpawn : transform.position;
+
         for (int i = 0; i < jointCount; i++)
         {
             GameObject joint = new GameObject("joint_" + i);
             Transform jointTransform = joint.transform;
-            jointTransform.localPosition = 
-                (unCrinkle ? movingSpawn : transform.position) + 
-                new Vector3(0, segLen * i, 0);
+            jointTransform.localPosition = spawnLoc + new Vector3(0, segLen * i, 0);
 
             joint.layer = LayerMask.NameToLayer("Nonattachable");
             jointTransform.SetParent(transform);
@@ -89,18 +90,19 @@ public class PapermateBody : MonoBehaviour
             Rigidbody2D body = joint.AddComponent<Rigidbody2D>();
             body.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             body.interpolation = RigidbodyInterpolation2D.Interpolate;
+
+            //first joint
             if (prevBody != null)
             {
                 joint.AddComponent<DistanceJoint2D>().connectedBody = prevBody;
-                HingeJoint2D hingeJoint = joint.AddComponent<HingeJoint2D>();
-                hingeJoint.useLimits = true;
-                hingeJoint.connectedBody = prevBody;
+                HingeJoint2D hinge = joint.AddComponent<HingeJoint2D>();
+                hinge.useLimits = true;
+                hinge.connectedBody = prevBody;
                 JointAngleLimits2D limits = new JointAngleLimits2D();
                 limits.max = 0;
                 limits.min = 0;
-                hingeJoint.limits = limits;
+                hinge.limits = limits;
                 body.mass = 0.5f;
-
             }
 
             _joints.Add(joint);
@@ -316,7 +318,7 @@ public class PapermateBody : MonoBehaviour
         }
     }
 
-    private Vector3 zLineOffset = new Vector3(0, 0, -1);
+    private Vector3 zLineOffset = new Vector3(0, 0, -1);// make closer to user
     private void UpdateLineRendererPositions()
     {
         _lineRenderer.SetPositions(_joints.Select(j => (j.transform.position + zLineOffset))

@@ -7,35 +7,56 @@ using UnityEngine.Rendering.PostProcessing;
 /// </summary>
 public class CameraPlayerController : MonoBehaviour
 {
-    public GameObject mainPlayer;
-    public float zRange = -10f;
-    public float cameraSpeed = 75f;
+    public GameObject mainPlayer; // the player to follow on screen
+	public Font gucciGoldFont; // the font to use for the UI
 
-    AudioSource musicSource;
-    float beatTimer = 0f;
-    float secPerBeat = 0.46875f;
-   public  float timer = 0;
-    bool feelinTheBeat = true;
-    public Font GucciGoldFont;
-   public  bool updateTime = true;
+    public bool updateTime = true; // For debug: stops timer when false
+    public bool doThatDisco = true; // Show colored vignette to beat
+    public bool feelinTheBeat = true; // Zoom camera to beat
 
-    PostProcessVolume volume;
-    Vignette vignette;
+	public float zRange = -10f; // distance from the player content
+	public float cameraSpeed = 10f; // how responsive the camera should be to motion
+	public float beatsPerMinute = 128f; // music speed
+    public float beatResizePercent = .99f; // the zoomed in camera size as percentage of original
+    public float vignetteOpacityPercent = 1.00f; // how much color to show
+    public float vignetteIntenityPercent = .30f; // how far the vignette should encroach
+
+    private float _timer = 0f; // keeps track of the time since the game began
+    private float _beatTimer = 0f; // keeps track of when it's time for the beat
+    private float _secPerBeat; // beat frequency
+    private float _fullCamSize; // the original camera size
+    private float _zoomedCamSize; // the size to show when zooming with the beat
+
+    private PostProcessVolume _volume; // triggers vignette changes
+	private AudioSource _musicSource; // cue music
+    private Vignette _vignette; // shows colored outline on camera
+    private GUIStyle _style; // used to style text for UI
 
     void Start()
     {
-        musicSource = GameObject.Find("Level").GetComponent<AudioSource>();
-        vignette = ScriptableObject.CreateInstance<Vignette>();
-        vignette.enabled.Override(true);
-        vignette.intensity.Override(0f);
-        vignette.color.Override(new Color(Random.value, Random.value, Random.value));
+        _musicSource = GameObject.Find("Level").GetComponent<AudioSource>();
 
-        volume = PostProcessManager.instance.QuickVolume(gameObject.layer, 100f, vignette);
+        _vignette = ScriptableObject.CreateInstance<Vignette>();
+        _vignette.enabled.Override(true);
+        _vignette.intensity.Override(0f);
+        _vignette.color.Override(new Color(Random.value, Random.value, Random.value));
+
+        _volume = PostProcessManager.instance.QuickVolume(gameObject.layer, 100f, _vignette);
+        _secPerBeat = 60f / beatsPerMinute;
+
+        _style = new GUIStyle();
+        _style.fontSize = 20;
+        _style.font = gucciGoldFont;
+        _style.normal.textColor = new Color(0.15f, 0.15f, 0.15f); // dark grey
+
+        _fullCamSize = Camera.main.orthographicSize;
+        _zoomedCamSize = _fullCamSize * beatResizePercent;
     }
 
     // Update is called once per frame
-    void Update ()
+    void Update()
     {
+        // move camera to player smoothly
         if (mainPlayer != null)
         {
             Vector3 currentPos = new Vector3(transform.position.x, transform.position.y, zRange);
@@ -43,60 +64,66 @@ public class CameraPlayerController : MonoBehaviour
             transform.position = Vector3.Lerp(currentPos, targetPos, Time.deltaTime * cameraSpeed);
         }
 
-        if (musicSource.isPlaying)
+        // we have music and want effects
+        if (_musicSource.isPlaying && (doThatDisco || feelinTheBeat))
         {
-            beatTimer += Time.deltaTime;
-            Vector3 temp = Camera.main.transform.position;
-            if (beatTimer >= secPerBeat)
+            _beatTimer += Time.deltaTime;
+            if (_beatTimer >= _secPerBeat)
             {
-                beatTimer += beatTimer - secPerBeat;
-                beatTimer = 0f;
+                _beatTimer %= _secPerBeat; // keeps it on beat without relying on framerate
+                if (doThatDisco)
+                {
+                    _vignette.intensity.value = vignetteIntenityPercent;
+                    _vignette.color.value = new Color(Random.value, Random.value,
+                                                      Random.value, vignetteOpacityPercent);
+                }
                 if (feelinTheBeat)
                 {
-                    Camera.main.orthographicSize = 4.8f;
-                    vignette.intensity.value = 0.6f;
-                    vignette.color.value = new Color(Random.value, Random.value, Random.value, 0.3f);
-                    StartCoroutine(ZoomIn());
+                    Camera.main.orthographicSize = _zoomedCamSize;
+                    StartCoroutine(ZoomOut()); // resize to original after instant in
                 }
+
             }
         }
 
+        // enable/disable visual effects
         if (Input.GetKeyDown(KeyCode.B))
         {
             feelinTheBeat = !feelinTheBeat;
+            doThatDisco = !doThatDisco;
         }
-        if(updateTime)
-            timer += Time.deltaTime;
+
+        if (updateTime)
+            _timer += Time.deltaTime;
     }
 
-    IEnumerator ZoomIn()
+    IEnumerator ZoomOut()
     {
-        float start = Camera.main.orthographicSize;
-        float startVignette = vignette.intensity.value;
-        float goal = 5f;
+        float startVignette = vignetteIntenityPercent;
+        float start = _zoomedCamSize;
+        float goal = _fullCamSize;
         float length = 0.35f;
         float time = 0f;
-        while (Camera.main.orthographicSize < 5)
+        while (Camera.main.orthographicSize < _fullCamSize)
         {
             time += Time.deltaTime;
             float t = Mathf.Sin(time * Mathf.PI * 0.5f);
             Camera.main.orthographicSize = Mathf.Lerp(start, goal, t / length);
-            vignette.intensity.value = Mathf.Lerp(startVignette, 0f, t / length);
+            _vignette.intensity.value = Mathf.Lerp(startVignette, 0f, t / length);
             yield return null;
         }
     }
 
     void OnGUI()
     {
-        int minutes = Mathf.FloorToInt(timer / 60F);
-        int seconds = Mathf.FloorToInt(timer - minutes * 60);
+        int minutes = (int)_timer / 60; // truncates by integer division
+        int seconds = (int)_timer % 60; // remainder after dividing by 60
         string niceTime = string.Format("{0:00}:{1:00}", minutes, seconds);
-        GUIStyle style = new GUIStyle();
-        style.fontSize = 20;  
-        style.font = GucciGoldFont;
-        style.normal.textColor = new Color(0.15f, 0.15f, 0.15f);
+        GUI.Label(new Rect(15, 10, 250, 100), niceTime, _style);
+    }
 
-
-         GUI.Label(new Rect(15, 10, 250, 100), niceTime, style);
+    public float GetTime()
+    {
+        return _timer; // accessor so that the value is internally controlled
     }
 }
