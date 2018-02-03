@@ -2,60 +2,74 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EscalatorSpawn : MonoBehaviour {
+public class EscalatorSpawn : MonoBehaviour
+{
+    public int numStairs = 8; // how many prefabs to generate
+    public float stairSpeed = 1; // how quickly the prefabs should move
 
-	public GameObject stepPrefab;
-	public float stairSpeed = 2;
-	private List<GameObject> steps = new List<GameObject>();
-	public GameObject first;
-	public GameObject last;
-	
-	// Use this for initialization
-	void Start () {
-		//Generate the initial steps
-		//steps.Add(Instantiate(step, new Vector3(step.transform.position.x, step.transform.position.y, 0), Quaternion.identity));
-		steps.Add(Instantiate(stepPrefab, first.transform.position, Quaternion.identity));
-		for (int i = 0; i < 7; i++){
-			GenerateStep();
-		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		//Move the steps
-		foreach (GameObject step in steps)
-		{
-			step.transform.Translate(new Vector3(stairSpeed * Time.deltaTime, -stairSpeed * Time.deltaTime), 0);
-		}
-		
-		//Destroy old steps
-		if(steps[0].transform.position.x > first.transform.position.x)
-		{
-				GameObject removed = steps[0];
-				steps.Remove(removed);
-				Destroy(removed);
-				//steps[0].transform.position = new Vector3(0, steps[0].transform.position.y, steps[0].transform.position.z);
-		}
-		
-		//Create new steps
+    public GameObject stepPrefab; // game object to create/mutate
+    public GameObject first; // prefab source
+    public GameObject last; // prefab sink
 
-		if(steps[steps.Count - 1].transform.position.x > last.transform.position.x + last.GetComponent<Renderer>().bounds.size.x)
-		{
-			GenerateStep();
-		}
-		
-		//Generate a new step if needed
-	}
-	
-	void GenerateStep () {
-		//Create a new GameObject at the selected location
-		GameObject previous = steps[steps.Count-1];
-		GameObject current = Instantiate(stepPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-		
-		Vector3 currentLocation = new Vector3(previous.transform.position.x - current.GetComponent<Renderer>().bounds.size.x,
-									          previous.transform.position.y + current.GetComponent<Renderer>().bounds.size.y,
-									          0);
-		current.transform.position = currentLocation;
-		steps.Add(current);
-	}
+    private float _distance; // distance between start/finish
+    private float _spawnDistance; // distance to travel before spawning prefab
+
+    private Vector3 _firstLoc; // position of source
+    private Vector3 _direction; // normalized direction to sink
+	private List<GameObject> steps = new List<GameObject>(); // used as a queue
+
+    // Use this for initialization
+    void Start()
+    {
+        // store position of the generator
+        _firstLoc = first.transform.position;
+        Vector3 difference = last.transform.position - _firstLoc;
+
+        // get direction and distance to object sink
+        _direction = difference.normalized;
+        _distance = difference.magnitude;
+        _spawnDistance = _distance / numStairs;
+        Vector3 spawnDirection = _spawnDistance * _direction;
+
+        // generate steps in reverse to generate furthest out stair first
+        for (int i = numStairs - 1; i >= 0; i--)
+        {     
+            GenerateStep(_firstLoc + (i * spawnDirection));
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        //Move the steps
+        Vector2 motion = _direction * stairSpeed * Time.deltaTime;
+        foreach (GameObject step in steps)
+        {
+            step.transform.Translate(motion);
+        }
+
+        //Destroy old steps
+        GameObject oldestStep = steps[0];
+        if ((oldestStep.transform.position - _firstLoc).magnitude > _distance)
+        {
+            steps.Remove(oldestStep);
+            Destroy(oldestStep);
+        }
+
+        // Create new steps if the closest step is outside the spawn distance
+        if ((steps[steps.Count - 1].transform.position - _firstLoc).magnitude > _spawnDistance)
+        {
+            GenerateStep(_firstLoc);
+        }
+    }
+
+    /// <summary>
+    /// Generates a new step and adds it to the queue using the given location 
+    /// as the starting location
+    /// </summary>
+    /// <param name="position">The position to locate the step at</param>
+    private void GenerateStep(Vector3 position)
+    {
+        steps.Add(Instantiate(stepPrefab, position, Quaternion.identity));
+    }
 }

@@ -388,7 +388,7 @@ GameObject:
   - component: {fileID: 50192156436751568}
   - component: {fileID: 61075807561244108}
   m_Layer: 0
-  m_Name: LastStep
+  m_Name: FirstStep
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2752,7 +2752,7 @@ GameObject:
   - component: {fileID: 50429194818008924}
   - component: {fileID: 61736148518822346}
   m_Layer: 0
-  m_Name: FirstStep
+  m_Name: LastStep
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10494,10 +10494,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e0ad1d289d9ffa4ba9ac4b365d92e30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numStairs: 8
+  stairSpeed: 3
   stepPrefab: {fileID: 1390436371494934, guid: 330c2a6d1ee056f49a5ed91b57df562a, type: 2}
-  stairSpeed: 1.1
-  first: {fileID: 1870432385352516}
-  last: {fileID: 1112489787076038}
+  first: {fileID: 1112489787076038}
+  last: {fileID: 1870432385352516}
 --- !u!114 &114535726506682942
 MonoBehaviour:
   m_ObjectHideFlags: 1

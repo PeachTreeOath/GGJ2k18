@@ -308,7 +308,6 @@ public class PapermateBody : MonoBehaviour
                 foreach (Collider2D collider in colliders)
                 {
                     collider.enabled = true;
-
                 }
 
                 Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
