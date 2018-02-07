@@ -45,6 +45,10 @@ public class PapermateBody : MonoBehaviour
 
     private Vector3 movingSpawn = new Vector3();
 
+    private bool isXbox_One_Controller = false;
+    private bool isPS4_Controller = false;
+
+
     float time = 0f;
 
     // Use this for initialization
@@ -143,6 +147,28 @@ public class PapermateBody : MonoBehaviour
 
     private void Update()
     {
+        string[] names = Input.GetJoystickNames();
+        for (int x = 0; x < names.Length; x++)
+        {
+            //print(names[x].Length);
+            if (names[x].Length == 19)
+            {
+                //print("PS4 CONTROLLER IS CONNECTED");
+                isPS4_Controller = true;
+            }
+            else if (names[x].Length == 33)
+            {
+                //print("XBOX ONE CONTROLLER IS CONNECTED");
+                isPS4_Controller = false;
+
+            }
+            else
+            {
+                //print("SOME OTHER CONTROLLER IS CONNECTED");
+                isPS4_Controller = false;
+            }
+        }
+
         // can only apply forces if we are touching a physics body
         bool amIGrounded = IsPaperGrounded();
         float framePower = amIGrounded ? power : airPower;
@@ -160,8 +186,19 @@ public class PapermateBody : MonoBehaviour
             UnlockJoint(leftBody, leftSprite, _leftGrabJoint, true);
 
         // right end handling
-        float h2 = Input.GetAxis("J_RightStickX");
-        float v2 = Input.GetAxis("J_RightStickY");
+        float h2;
+        float v2;
+        if (isPS4_Controller)
+        {
+            h2 = Input.GetAxis("PS4_RightStickX");
+            v2 = Input.GetAxis("PS4_RightStickY");
+        }
+        else
+        {
+            h2 = Input.GetAxis("J_RightStickX");
+            v2 = Input.GetAxis("J_RightStickY");
+        }
+        
         rightBody.AddForce(new Vector2(h2 * framePower, v2 * framePower));
 
         if (Input.GetButtonDown("KeyGrabRight"))
@@ -170,10 +207,20 @@ public class PapermateBody : MonoBehaviour
             UnlockJoint(rightBody, rightSprite, _rightGrabJoint, false);
 
         // special keys
-        if (Input.GetButtonDown("CheatModeButton"))
-            toggleCheatMode();
-        if (Input.GetButtonDown("UnwrinkleButton"))
-            Uncrinkle();
+        if (isPS4_Controller)
+        {
+            if (Input.GetButtonDown("PS4_CheatModeButton"))
+                toggleCheatMode();
+            if (Input.GetButtonDown("PS4_UnwrinkleButton"))
+                Uncrinkle();
+        }
+        else
+        {
+            if (Input.GetButtonDown("CheatModeButton"))
+                toggleCheatMode();
+            if (Input.GetButtonDown("UnwrinkleButton"))
+                Uncrinkle();
+        }
         if (Input.GetButtonDown("ResetGame"))
             Application.LoadLevel(0);
 
