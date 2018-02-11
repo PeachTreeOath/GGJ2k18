@@ -441,8 +441,8 @@ InputManager:
     m_Name: J_RightStickX
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: left
-    positiveButton: right
+    negativeButton: j
+    positiveButton: l
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
@@ -489,8 +489,8 @@ InputManager:
     m_Name: J_RightStickY
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: down
-    positiveButton: up
+    negativeButton: k
+    positiveButton: i
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
@@ -506,7 +506,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: joystick button 9
+    positiveButton: /
     altNegativeButton: 
     altPositiveButton: right ctrl
     gravity: 1000
