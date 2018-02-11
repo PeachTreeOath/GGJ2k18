@@ -48,6 +48,9 @@ public class PapermateBody : MonoBehaviour
     private bool isXbox_One_Controller = false;
     private bool isPS4_Controller = false;
 
+    private bool leftGrabbed = false;
+    private bool rightGrabbed = false;
+
 
     float time = 0f;
 
@@ -180,10 +183,16 @@ public class PapermateBody : MonoBehaviour
         float v1 = Input.GetAxis("J_LeftStickY");
         leftBody.AddForce(new Vector2(h1 * framePower, v1 * framePower));
 
-        if (Input.GetButtonDown("KeyGrabLeft"))
+        if (Input.GetButton("KeyGrabLeft") && !leftGrabbed)
+        {
             _leftGrabJoint = LockJoint(leftBody, leftCollider, leftSprite, true);
+
+        }
         else if (Input.GetButtonUp("KeyGrabLeft"))
+        {
             UnlockJoint(leftBody, leftSprite, _leftGrabJoint, true);
+            leftGrabbed = false;
+        }
 
         // right end handling
         float h2;
@@ -201,10 +210,17 @@ public class PapermateBody : MonoBehaviour
         
         rightBody.AddForce(new Vector2(h2 * framePower, v2 * framePower));
 
-        if (Input.GetButtonDown("KeyGrabRight"))
+
+        if (Input.GetButton("KeyGrabRight") && !rightGrabbed)
+        {
             _rightGrabJoint = LockJoint(rightBody, rightCollider, rightSprite, false);
+     
+        }
         else if (Input.GetButtonUp("KeyGrabRight"))
+        {
             UnlockJoint(rightBody, rightSprite, _rightGrabJoint, false);
+            rightGrabbed = false;
+        }
 
         // special keys
         if (isPS4_Controller)
@@ -296,9 +312,15 @@ public class PapermateBody : MonoBehaviour
         if (results.Length > 0 && results[0] != null)
         {
             if (isLeft)
+            {
                 leftSprite.sprite = leftSpriteOn;
+                leftGrabbed = true;
+            }
             else
+            {
                 rightSprite.sprite = rightSpriteOn;
+                rightGrabbed = true;
+            }
 
             DistanceJoint2D distJt = rigidBody.gameObject.AddComponent<DistanceJoint2D>();
             distJt.connectedBody = results[0].attachedRigidbody;
