@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -41,6 +42,8 @@ public class PapermateBody : MonoBehaviour
     private Sprite rightSpriteOff;
     private Sprite leftSpriteOn;
     private Sprite rightSpriteOn;
+    private Sprite leftSpriteReady;
+    private Sprite rightSpriteReady;
     private CameraPlayerController cameraPlayerController;
 
     private Vector3 movingSpawn = new Vector3();
@@ -62,6 +65,8 @@ public class PapermateBody : MonoBehaviour
         rightSpriteOff = Resources.Load<Sprite>("Textures/rightButtonOff");
         leftSpriteOn = Resources.Load<Sprite>("Textures/leftButtonOn");
         rightSpriteOn = Resources.Load<Sprite>("Textures/rightButtonOn");
+        leftSpriteReady = Resources.Load<Sprite>("Textures/leftButtonReady");
+        rightSpriteReady = Resources.Load<Sprite>("Textures/rightButtonReady");
 
         staticPhysicsLayer = LayerMask.NameToLayer("Default");
         grabbablePhysicsLayer = LayerMask.NameToLayer("Grabbable");
@@ -183,6 +188,9 @@ public class PapermateBody : MonoBehaviour
         float v1 = Input.GetAxis("J_LeftStickY");
         leftBody.AddForce(new Vector2(h1 * framePower, v1 * framePower));
 
+        if (!leftGrabbed)
+            IsJointContacting(leftCollider, leftSprite, true);
+
         if (Input.GetButton("KeyGrabLeft") && !leftGrabbed)
         {
             _leftGrabJoint = LockJoint(leftBody, leftCollider, leftSprite, true);
@@ -210,6 +218,8 @@ public class PapermateBody : MonoBehaviour
         
         rightBody.AddForce(new Vector2(h2 * framePower, v2 * framePower));
 
+        if(!rightGrabbed)
+            IsJointContacting(rightCollider, rightSprite, false);
 
         if (Input.GetButton("KeyGrabRight") && !rightGrabbed)
         {
@@ -339,6 +349,38 @@ public class PapermateBody : MonoBehaviour
         else
             rightSprite.sprite = rightSpriteOff;
         GameObject.Destroy(grabJoint);
+    }
+
+    private bool IsJointContacting(CircleCollider2D col2D, SpriteRenderer sprite, bool isLeft)
+    {
+        Collider2D[] results = new Collider2D[10];
+        col2D.OverlapCollider(new ContactFilter2D(), results);
+        results = results.Where(c => c != null && (c.gameObject.layer == staticPhysicsLayer || c.gameObject.layer == grabbablePhysicsLayer)).ToArray();
+
+        if (results.Length > 0 && results[0] != null)
+        {
+            if (isLeft)
+            {
+                leftSprite.sprite = leftSpriteReady;
+            }
+            else
+            {
+                rightSprite.sprite = rightSpriteReady;
+            }
+
+            return true;
+        }
+
+            if (isLeft)
+            {
+                leftSprite.sprite = leftSpriteOff;
+            }
+            else
+            {
+                rightSprite.sprite = rightSpriteOff;
+            }
+
+        return false;
     }
 
     private void Uncrinkle()
