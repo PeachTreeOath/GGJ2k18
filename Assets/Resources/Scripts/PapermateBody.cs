@@ -55,6 +55,11 @@ public class PapermateBody : MonoBehaviour
     private bool rightGrabbed = false;
 
 
+
+    private DistanceJoint2D leftDistJ;
+    private DistanceJoint2D rightDistJ;
+
+
     float time = 0f;
 
     // Use this for initialization
@@ -232,6 +237,14 @@ public class PapermateBody : MonoBehaviour
             rightGrabbed = false;
         }
 
+        if (Input.GetButton("Stabilize"))
+        {
+            Stabilize(leftBody, rightBody);
+        }else if (Input.GetButtonUp("Stabilize"))
+        {
+            Unstabilize();
+        }
+
         // special keys
         if (isPS4_Controller)
         {
@@ -349,6 +362,33 @@ public class PapermateBody : MonoBehaviour
         else
             rightSprite.sprite = rightSpriteOff;
         GameObject.Destroy(grabJoint);
+    }
+
+    private void Stabilize(Rigidbody2D leftRigidBody, Rigidbody2D rightRigidBody)
+    {
+        Debug.Log("Stabilizing");
+        //Collider2D[] results = new Collider2D[10];
+        //col2D.OverlapCollider(new ContactFilter2D(), results);
+        //results = results.Where(c => c != null && (c.gameObject.layer == staticPhysicsLayer || c.gameObject.layer == grabbablePhysicsLayer)).ToArray();
+
+        Rigidbody2D leftStabilizePoint = GameObject.Find("leftStabilizePoint").GetComponent<Rigidbody2D>();
+        Rigidbody2D rightStabilizePoint = GameObject.Find("rightStabilizePoint").GetComponent<Rigidbody2D>();
+        leftDistJ = leftRigidBody.gameObject.AddComponent<DistanceJoint2D>();
+        rightDistJ = rightRigidBody.gameObject.AddComponent<DistanceJoint2D>();
+        leftDistJ.connectedBody = leftStabilizePoint;
+        rightDistJ.connectedBody = rightStabilizePoint;
+        //distJt.connectedAnchor = results[0].transform.InverseTransformPoint(rigidBody.transform.position);
+        leftDistJ.autoConfigureDistance = false;
+        rightDistJ.autoConfigureDistance = false;
+        leftDistJ.distance = 0.01f;
+        rightDistJ.distance = 0.01f;
+    }
+
+    private void Unstabilize()
+    {
+        Debug.Log("Unstabilizing");
+        GameObject.Destroy(leftDistJ);
+        GameObject.Destroy(rightDistJ);
     }
 
     private bool IsJointContacting(CircleCollider2D col2D, SpriteRenderer sprite, bool isLeft)
