@@ -56,11 +56,14 @@ public class PapermateBody : MonoBehaviour
 
 
 
-    private DistanceJoint2D leftDistJ;
-    private DistanceJoint2D rightDistJ;
+    private SpringJoint2D leftDistJ;
+    private SpringJoint2D rightDistJ;
 
 
     float time = 0f;
+
+
+    private bool isStabilized = false;
 
     // Use this for initialization
     private void Start()
@@ -85,6 +88,13 @@ public class PapermateBody : MonoBehaviour
     // used to build out the physics body and joints of papermate
     private void InitializeBody(bool unCrinkle = false)
     {
+
+        GameObject leftStabilizePointGo = GameObject.Find("leftStabilizePoint");
+        GameObject rightStabilizePointGo = GameObject.Find("rightStabilizePoint");
+        leftStabilizePointGo.transform.SetParent(transform);
+        rightStabilizePointGo.transform.SetParent(transform);
+
+
         Rigidbody2D prevBody = null;
         _joints = new List<GameObject>();
 
@@ -156,6 +166,8 @@ public class PapermateBody : MonoBehaviour
         // set the middle point as the camera follower
         CameraPlayerController camera = FindObjectOfType<CameraPlayerController>();
         camera.mainPlayer = _joints[jointCount / 2].gameObject;
+
+        transform.SetParent(_joints[jointCount / 2].gameObject.transform);
     }
 
     private void Update()
@@ -237,10 +249,10 @@ public class PapermateBody : MonoBehaviour
             rightGrabbed = false;
         }
 
-        if (Input.GetButton("Stabilize"))
+        if (Input.GetButton("Stabilize") && !isStabilized)
         {
             Stabilize(leftBody, rightBody);
-        }else if (Input.GetButtonUp("Stabilize"))
+        }else if (Input.GetButtonUp("Stabilize") && isStabilized)
         {
             Unstabilize();
         }
@@ -267,15 +279,15 @@ public class PapermateBody : MonoBehaviour
         UpdateLineRendererPositions();
 
         // apply special upward force when falling
-        Vector2 vel = leftBody.velocity;
-        if (!amIGrounded && vel.y < 0)
-        {
-            Vector2 upLift = GetLiftFromEndpoints(leftBody.position,
-                                                  rightBody.position, vel);
-
-            leftBody.AddForce(upLift);
-            rightBody.AddForce(upLift);
-        }
+        //Vector2 vel = leftBody.velocity;
+        //if (!amIGrounded && vel.y < 0)
+        //{
+        //    Vector2 upLift = GetLiftFromEndpoints(leftBody.position,
+        //                                          rightBody.position, vel);
+        //
+        //    leftBody.AddForce(upLift);
+         //   rightBody.AddForce(upLift);
+        //}
     }
 
     private void LateUpdate()
@@ -370,11 +382,14 @@ public class PapermateBody : MonoBehaviour
         //Collider2D[] results = new Collider2D[10];
         //col2D.OverlapCollider(new ContactFilter2D(), results);
         //results = results.Where(c => c != null && (c.gameObject.layer == staticPhysicsLayer || c.gameObject.layer == grabbablePhysicsLayer)).ToArray();
-
+        GameObject leftStabilizePointGo = GameObject.Find("leftStabilizePoint");
+        GameObject rightStabilizePointGo = GameObject.Find("rightStabilizePoint");
+        leftStabilizePointGo.transform.SetParent(transform);
+        rightStabilizePointGo.transform.SetParent(transform);
         Rigidbody2D leftStabilizePoint = GameObject.Find("leftStabilizePoint").GetComponent<Rigidbody2D>();
         Rigidbody2D rightStabilizePoint = GameObject.Find("rightStabilizePoint").GetComponent<Rigidbody2D>();
-        leftDistJ = leftRigidBody.gameObject.AddComponent<DistanceJoint2D>();
-        rightDistJ = rightRigidBody.gameObject.AddComponent<DistanceJoint2D>();
+        leftDistJ = leftRigidBody.gameObject.AddComponent<SpringJoint2D>();
+        rightDistJ = rightRigidBody.gameObject.AddComponent<SpringJoint2D>();
         leftDistJ.connectedBody = leftStabilizePoint;
         rightDistJ.connectedBody = rightStabilizePoint;
         //distJt.connectedAnchor = results[0].transform.InverseTransformPoint(rigidBody.transform.position);
@@ -382,6 +397,7 @@ public class PapermateBody : MonoBehaviour
         rightDistJ.autoConfigureDistance = false;
         leftDistJ.distance = 0.01f;
         rightDistJ.distance = 0.01f;
+        isStabilized = true;
     }
 
     private void Unstabilize()
@@ -389,6 +405,7 @@ public class PapermateBody : MonoBehaviour
         Debug.Log("Unstabilizing");
         GameObject.Destroy(leftDistJ);
         GameObject.Destroy(rightDistJ);
+        isStabilized = false;
     }
 
     private bool IsJointContacting(CircleCollider2D col2D, SpriteRenderer sprite, bool isLeft)

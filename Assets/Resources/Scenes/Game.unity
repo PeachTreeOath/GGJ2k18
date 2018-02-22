@@ -293,6 +293,7 @@ GameObject:
   m_Component:
   - component: {fileID: 396870784}
   - component: {fileID: 396870786}
+  - component: {fileID: 396870785}
   m_Layer: 8
   m_Name: leftStabilizePoint
   m_TagString: Untagged
@@ -313,6 +314,25 @@ Transform:
   m_Father: {fileID: 159424613}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!231 &396870785
+SpringJoint2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 396870783}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 1
+  m_Distance: 3.8275318
+  m_DampingRatio: 0
+  m_Frequency: 1
 --- !u!50 &396870786
 Rigidbody2D:
   serializedVersion: 4
@@ -320,7 +340,7 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 396870783}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -1010,6 +1030,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1741564908}
   - component: {fileID: 1741564910}
+  - component: {fileID: 1741564909}
   m_Layer: 8
   m_Name: rightStabilizePoint
   m_TagString: Untagged
@@ -1030,6 +1051,25 @@ Transform:
   m_Father: {fileID: 159424613}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!231 &1741564909
+SpringJoint2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1741564907}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 1
+  m_Distance: 1.7691805
+  m_DampingRatio: 0
+  m_Frequency: 1
 --- !u!50 &1741564910
 Rigidbody2D:
   serializedVersion: 4
@@ -1037,7 +1077,7 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1741564907}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
