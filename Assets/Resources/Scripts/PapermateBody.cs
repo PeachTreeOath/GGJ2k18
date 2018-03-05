@@ -250,10 +250,10 @@ public class PapermateBody : MonoBehaviour
 
         if (Input.GetButton("Stabilize") && !isStabilized)
         {
-            Stabilize(leftBody, rightBody);
+            //Stabilize(leftBody, rightBody);
         }else if (Input.GetButtonUp("Stabilize") && isStabilized)
         {
-            Unstabilize();
+            //Unstabilize();
         }
 
         // special keys
