@@ -249,7 +249,6 @@ public class PapermateBody : MonoBehaviour
         if (!rightGrabbed)
             IsJointContacting(rightCollider, rightSprite, false);
 
-        Debug.Log(rightGrabbed);
         if (Input.GetButton("KeyGrabRight") && !rightGrabbed)
         {
             _rightGrabJoint = LockJoint(rightBody, rightCollider, rightSprite, false);
