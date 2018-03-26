@@ -54,14 +54,16 @@ public class PapermateBody : MonoBehaviour
     private bool leftGrabbed = false;
     private bool rightGrabbed = false;
 
-
+    // These 4 are used to differentiate between bumper and trigger pulls so that they don't mix. I.e. holding bumper but then letting go of trigger shouldn't release your grab.
+    private bool isKeyGrabbingLeft;
+    private bool isKeyGrabbingRight;
+    private bool isJoyGrabbingLeft;
+    private bool isJoyGrabbingRight;
 
     private SpringJoint2D leftDistJ;
     private SpringJoint2D rightDistJ;
 
-
     float time = 0f;
-
 
     private bool isStabilized = false;
 
@@ -88,12 +90,10 @@ public class PapermateBody : MonoBehaviour
     // used to build out the physics body and joints of papermate
     private void InitializeBody(bool unCrinkle = false)
     {
-
         GameObject leftStabilizePointGo = GameObject.Find("leftStabilizePoint");
         GameObject rightStabilizePointGo = GameObject.Find("rightStabilizePoint");
         leftStabilizePointGo.transform.SetParent(transform);
         rightStabilizePointGo.transform.SetParent(transform);
-
 
         Rigidbody2D prevBody = null;
         _joints = new List<GameObject>();
@@ -144,7 +144,6 @@ public class PapermateBody : MonoBehaviour
                 body.mass = 10f;
                 capsuleCollider.offset = new Vector2(0, 0.1f);
                 capsuleCollider.size = new Vector2(0.21f, 0.21f);
-
             }
             if (i == jointCount - 1)
             {
@@ -207,15 +206,28 @@ public class PapermateBody : MonoBehaviour
         if (!leftGrabbed)
             IsJointContacting(leftCollider, leftSprite, true);
 
-        if (Input.GetButton("KeyGrabLeft") && !leftGrabbed)
+        if (Input.GetButton("KeyGrabLeft")  && !leftGrabbed)
         {
             _leftGrabJoint = LockJoint(leftBody, leftCollider, leftSprite, true);
-
+            isKeyGrabbingLeft = true;
         }
-        else if (Input.GetButtonUp("KeyGrabLeft"))
+        else if (Input.GetButtonUp("KeyGrabLeft") && isKeyGrabbingLeft)
         {
             UnlockJoint(leftBody, leftSprite, _leftGrabJoint, true);
             leftGrabbed = false;
+            isKeyGrabbingLeft = false;
+        }
+
+        if (Input.GetAxisRaw("JoyGrabLeft") > 0 && !leftGrabbed)
+        {
+            _leftGrabJoint = LockJoint(leftBody, leftCollider, leftSprite, true);
+            isJoyGrabbingLeft = true;
+        }
+        else if (Input.GetAxisRaw("JoyGrabLeft") == 0 && isJoyGrabbingLeft)
+        {
+            UnlockJoint(leftBody, leftSprite, _leftGrabJoint, true);
+            leftGrabbed = false;
+            isJoyGrabbingLeft = false;
         }
 
         // right end handling
@@ -231,27 +243,42 @@ public class PapermateBody : MonoBehaviour
             h2 = Input.GetAxis("J_RightStickX");
             v2 = Input.GetAxis("J_RightStickY");
         }
-        
+
         rightBody.AddForce(new Vector2(h2 * framePower, v2 * framePower));
 
-        if(!rightGrabbed)
+        if (!rightGrabbed)
             IsJointContacting(rightCollider, rightSprite, false);
 
+        Debug.Log(rightGrabbed);
         if (Input.GetButton("KeyGrabRight") && !rightGrabbed)
         {
             _rightGrabJoint = LockJoint(rightBody, rightCollider, rightSprite, false);
-     
+            isKeyGrabbingRight = true;
         }
-        else if (Input.GetButtonUp("KeyGrabRight"))
+        else if (Input.GetButtonUp("KeyGrabRight") && isKeyGrabbingRight)
         {
             UnlockJoint(rightBody, rightSprite, _rightGrabJoint, false);
             rightGrabbed = false;
+            isKeyGrabbingRight = false;
+        }
+
+        if (Input.GetAxisRaw("JoyGrabRight") > 0 && !rightGrabbed)
+        {
+            _rightGrabJoint = LockJoint(rightBody, rightCollider, rightSprite, false);
+            isJoyGrabbingRight = true;
+        }
+        else if (Input.GetAxisRaw("JoyGrabRight") == 0 && isJoyGrabbingRight)
+        {
+            UnlockJoint(rightBody, rightSprite, _rightGrabJoint, false);
+            rightGrabbed = false;
+            isJoyGrabbingRight = false;
         }
 
         if (Input.GetButton("Stabilize") && !isStabilized)
         {
             //Stabilize(leftBody, rightBody);
-        }else if (Input.GetButtonUp("Stabilize") && isStabilized)
+        }
+        else if (Input.GetButtonUp("Stabilize") && isStabilized)
         {
             //Unstabilize();
         }
@@ -285,7 +312,7 @@ public class PapermateBody : MonoBehaviour
         //                                          rightBody.position, vel);
         //
         //    leftBody.AddForce(upLift);
-         //   rightBody.AddForce(upLift);
+        //   rightBody.AddForce(upLift);
         //}
     }
 
@@ -427,14 +454,14 @@ public class PapermateBody : MonoBehaviour
             return true;
         }
 
-            if (isLeft)
-            {
-                leftSprite.sprite = leftSpriteOff;
-            }
-            else
-            {
-                rightSprite.sprite = rightSpriteOff;
-            }
+        if (isLeft)
+        {
+            leftSprite.sprite = leftSpriteOff;
+        }
+        else
+        {
+            rightSprite.sprite = rightSpriteOff;
+        }
 
         return false;
     }
@@ -487,6 +514,7 @@ public class PapermateBody : MonoBehaviour
     }
 
     private Vector3 zLineOffset = new Vector3(0, 0, -1);// make closer to user
+    
     private void UpdateLineRendererPositions()
     {
         _lineRenderer.SetPositions(_joints.Select(j => (j.transform.position + zLineOffset))
