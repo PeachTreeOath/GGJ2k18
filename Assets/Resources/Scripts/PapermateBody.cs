@@ -387,6 +387,7 @@ public class PapermateBody : MonoBehaviour
             distJt.connectedAnchor = results[0].transform.InverseTransformPoint(rigidBody.transform.position);
             distJt.autoConfigureDistance = false;
             distJt.distance = 0.01f;
+            AudioManager.instance.PlaySound("stick");
             return distJt;
         }
         return null;
