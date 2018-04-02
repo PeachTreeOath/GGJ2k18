@@ -121,14 +121,20 @@ public class PapermateBody : MonoBehaviour
             //first joint
             if (prevBody != null)
             {
-                joint.AddComponent<DistanceJoint2D>().connectedBody = prevBody;
-                HingeJoint2D hinge = joint.AddComponent<HingeJoint2D>();
-                hinge.useLimits = true;
+                // WILL: HIS IS THE OLD JOINT CODE. I REMOVED THIS AFTER CHANGING THE VEL AND POS ITERATIONS
+                // joint.AddComponent<DistanceJoint2D>().connectedBody = prevBody;
+                // HingeJoint2D hinge = joint.AddComponent<HingeJoint2D>();
+                // hinge.useLimits = true;
+                // hinge.connectedBody = prevBody;
+                // JointAngleLimits2D limits = new JointAngleLimits2D();
+                // limits.max = 0;
+                // limits.min = 0;
+                // hinge.limits = limits;
+                // body.mass = 0.5f;
+
+                // WILL: NEW SIMPLE JOINT CODE
+                FixedJoint2D hinge = joint.AddComponent<FixedJoint2D>();
                 hinge.connectedBody = prevBody;
-                JointAngleLimits2D limits = new JointAngleLimits2D();
-                limits.max = 0;
-                limits.min = 0;
-                hinge.limits = limits;
                 body.mass = 0.5f;
             }
 
@@ -513,7 +519,7 @@ public class PapermateBody : MonoBehaviour
     }
 
     private Vector3 zLineOffset = new Vector3(0, 0, -1);// make closer to user
-    
+
     private void UpdateLineRendererPositions()
     {
         _lineRenderer.SetPositions(_joints.Select(j => (j.transform.position + zLineOffset))
