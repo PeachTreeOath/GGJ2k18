@@ -13,8 +13,8 @@ public class PapermateBody : MonoBehaviour
     public int jointCount = 10;
     public int paperLength = 4;
     public float width = 0.2f;
-    public float power = 350;
-    public float airPower = 20f;
+    public float power = 27500;
+    public float airPower = 2000;
     public float upwardLift = 10f;
     public float glideVelocityMax = 4f;
 
@@ -205,7 +205,7 @@ public class PapermateBody : MonoBehaviour
         // left end handling
         float h1 = Input.GetAxis("J_LeftStickX");
         float v1 = Input.GetAxis("J_LeftStickY");
-        leftBody.AddForce(new Vector2(h1 * framePower, v1 * framePower));
+        leftBody.AddForce(new Vector2(h1 * framePower * Time.deltaTime, v1 * framePower * Time.deltaTime));
 
         if (!leftGrabbed)
             IsJointContacting(leftCollider, leftSprite, true);
@@ -248,7 +248,7 @@ public class PapermateBody : MonoBehaviour
             v2 = Input.GetAxis("J_RightStickY");
         }
 
-        rightBody.AddForce(new Vector2(h2 * framePower, v2 * framePower));
+        rightBody.AddForce(new Vector2(h2 * framePower * Time.deltaTime, v2 * framePower * Time.deltaTime));
 
         if (!rightGrabbed)
             IsJointContacting(rightCollider, rightSprite, false);
