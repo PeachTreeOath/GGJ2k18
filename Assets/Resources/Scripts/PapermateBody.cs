@@ -570,4 +570,19 @@ public class PapermateBody : MonoBehaviour
 
         }
     }
+
+    public void ApplyKnockback(Vector3 enemyPos, float knockbackStrength)
+    {
+        //Calculate vector between enemy and centerpoint of paper
+        Vector3 knockbackDirection = _joints[5].transform.position - enemyPos;
+        knockbackDirection = knockbackDirection.normalized;
+        Vector3 knockBackForce = knockbackDirection * knockbackStrength;
+
+        foreach (GameObject joint in _joints)
+        {
+            Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
+            rb.AddForce(knockBackForce, ForceMode2D.Impulse);
+        }
+
+    }
 }
