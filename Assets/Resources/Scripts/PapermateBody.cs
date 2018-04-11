@@ -17,6 +17,7 @@ public class PapermateBody : MonoBehaviour
     public float airPower = 2000;
     public float upwardLift = 10f;
     public float glideVelocityMax = 4f;
+    public float stunDuration;
 
     public SpriteRenderer leftSprite;
     public SpriteRenderer rightSprite;
@@ -67,6 +68,7 @@ public class PapermateBody : MonoBehaviour
     private GameObject centerPoint;
 
     private bool isStabilized = false;
+    private bool isStunned = false;
 
     // Use this for initialization
     private void Start()
@@ -210,24 +212,24 @@ public class PapermateBody : MonoBehaviour
         if (!leftGrabbed)
             IsJointContacting(leftCollider, leftSprite, true);
 
-        if (Input.GetButton("KeyGrabLeft") && !leftGrabbed)
+        if (Input.GetButton("KeyGrabLeft") && !leftGrabbed && !isStunned)
         {
             _leftGrabJoint = LockJoint(leftBody, leftCollider, leftSprite, true);
             isKeyGrabbingLeft = true;
         }
-        else if (Input.GetButtonUp("KeyGrabLeft") && isKeyGrabbingLeft)
+        else if (Input.GetButtonUp("KeyGrabLeft") && isKeyGrabbingLeft || isStunned)
         {
             UnlockJoint(leftBody, leftSprite, _leftGrabJoint, true);
             leftGrabbed = false;
             isKeyGrabbingLeft = false;
         }
 
-        if (Input.GetAxisRaw("JoyGrabLeft") > 0 && !leftGrabbed)
+        if (Input.GetAxisRaw("JoyGrabLeft") > 0 && !leftGrabbed && !isStunned)
         {
             _leftGrabJoint = LockJoint(leftBody, leftCollider, leftSprite, true);
             isJoyGrabbingLeft = true;
         }
-        else if (Input.GetAxisRaw("JoyGrabLeft") == 0 && isJoyGrabbingLeft)
+        else if (Input.GetAxisRaw("JoyGrabLeft") == 0 && isJoyGrabbingLeft || isStunned)
         {
             UnlockJoint(leftBody, leftSprite, _leftGrabJoint, true);
             leftGrabbed = false;
@@ -253,24 +255,24 @@ public class PapermateBody : MonoBehaviour
         if (!rightGrabbed)
             IsJointContacting(rightCollider, rightSprite, false);
 
-        if (Input.GetButton("KeyGrabRight") && !rightGrabbed)
+        if (Input.GetButton("KeyGrabRight") && !rightGrabbed && !isStunned)
         {
             _rightGrabJoint = LockJoint(rightBody, rightCollider, rightSprite, false);
             isKeyGrabbingRight = true;
         }
-        else if (Input.GetButtonUp("KeyGrabRight") && isKeyGrabbingRight)
+        else if ((Input.GetButtonUp("KeyGrabRight") && isKeyGrabbingRight) || isStunned)
         {
             UnlockJoint(rightBody, rightSprite, _rightGrabJoint, false);
             rightGrabbed = false;
             isKeyGrabbingRight = false;
         }
 
-        if (Input.GetAxisRaw("JoyGrabRight") > 0 && !rightGrabbed)
+        if (Input.GetAxisRaw("JoyGrabRight") > 0 && !rightGrabbed && !isStunned)
         {
             _rightGrabJoint = LockJoint(rightBody, rightCollider, rightSprite, false);
             isJoyGrabbingRight = true;
         }
-        else if (Input.GetAxisRaw("JoyGrabRight") == 0 && isJoyGrabbingRight)
+        else if ((Input.GetAxisRaw("JoyGrabRight") == 0 && isJoyGrabbingRight) || isStunned)
         {
             UnlockJoint(rightBody, rightSprite, _rightGrabJoint, false);
             rightGrabbed = false;
@@ -583,6 +585,23 @@ public class PapermateBody : MonoBehaviour
             Rigidbody2D rb = joint.GetComponent<Rigidbody2D>();
             rb.AddForce(knockBackForce, ForceMode2D.Impulse);
         }
+
+        StartCoroutine(StunnedState());
+
+    }
+
+    IEnumerator StunnedState()
+    {
+        float time = 0f;
+        isStunned = true;
+        while (time < stunDuration)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        isStunned = false;
+
 
     }
 }
