@@ -5,6 +5,14 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
 
     public float knockbackStrength;
+    public float gravityValue;
+    public Vector2 gravityDirection;
+
+    private void Update()
+    {
+        Rigidbody2D body = GetComponent<Rigidbody2D>();
+        body.AddForce(gravityDirection * gravityValue);
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
