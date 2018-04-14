@@ -61,8 +61,8 @@ public class PapermateBodyNew : MonoBehaviour
     private bool isJoyGrabbingLeft;
     private bool isJoyGrabbingRight;
 
-    public GameObject leftStabilizePointGo;
-    public GameObject rightStabilizePointGo;
+    private GameObject leftStabilizePointGo;
+    private GameObject rightStabilizePointGo;
     private HingeJoint2D leftStabilizePoint;
     private HingeJoint2D rightStabilizePoint;
     private GameObject centerPoint;
@@ -157,7 +157,7 @@ public class PapermateBodyNew : MonoBehaviour
 
         transform.SetParent(_joints[jointCount / 2].gameObject.transform);
 
-        InitializeStabilizers(_joints.First().GetComponent<Rigidbody2D>(), _joints.Last().GetComponent<Rigidbody2D>());
+        //InitializeStabilizers(_joints.First().GetComponent<Rigidbody2D>(), _joints.Last().GetComponent<Rigidbody2D>());
     }
 
     private void Update()
@@ -265,14 +265,14 @@ public class PapermateBodyNew : MonoBehaviour
             isJoyGrabbingRight = false;
         }
 
-        if (Input.GetButton("Stabilize") && !isStabilized)
+        /*if (Input.GetButton("Stabilize") && !isStabilized)
         {
             Stabilize(leftBody, rightBody);
         }
         else if (Input.GetButtonUp("Stabilize") && isStabilized)
         {
             Unstabilize();
-        }
+        }*/
 
         // special keys
         if (isPS4_Controller)
