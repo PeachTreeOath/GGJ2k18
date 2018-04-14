@@ -73,6 +73,7 @@ GameObject:
   - component: {fileID: 4793841855556934}
   - component: {fileID: 120518308086175536}
   - component: {fileID: 114881749870138218}
+  - component: {fileID: 114322131733233418}
   m_Layer: 8
   m_Name: papermate
   m_TagString: Untagged
@@ -235,6 +236,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &114322131733233418
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1668908429114278}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45cb1d2436118e84faf13e623dd14380, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jointCount: 10
+  paperLength: 4
+  width: 0.2
+  power: 27500
+  airPower: 2000
+  upwardLift: 10
+  glideVelocityMax: 4
+  stunDuration: 0
+  leftSprite: {fileID: 212418136826127928}
+  rightSprite: {fileID: 212444054012255360}
+  labelOffset: 0.5
+  standardTextColor: {r: 1, g: 1, b: 1, a: 1}
+  pressedTextColor: {r: 1, g: 0.6, b: 0, a: 1}
+  leftStabilizePointGo: {fileID: 1306049194742412}
+  rightStabilizePointGo: {fileID: 1222671144838716}
 --- !u!114 &114881749870138218
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -253,6 +280,7 @@ MonoBehaviour:
   airPower: 2000
   upwardLift: 10
   glideVelocityMax: 4
+  stunDuration: 0
   leftSprite: {fileID: 212418136826127928}
   rightSprite: {fileID: 212444054012255360}
   labelOffset: 0.25
