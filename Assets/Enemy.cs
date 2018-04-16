@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour {
     {
         if (other.GetComponent<WinTrigger>() != null)
         {
-            PapermateBody body = other.GetComponentInParent(typeof(PapermateBody)) as PapermateBody;
+            PapermateBodyNew body = other.GetComponentInParent(typeof(PapermateBodyNew)) as PapermateBodyNew;
 
             if (body != null)
             {

@@ -26,7 +26,7 @@ public class WinZone : MonoBehaviour
     private void StartVictory()
     {
 		Vector3 camLoc = Camera.main.transform.position;
-        PapermateBody paper = GameObject.Find("papermate").GetComponent<PapermateBody>();
+        PapermateBodyNew paper = GameObject.Find("papermate").GetComponent<PapermateBodyNew>();
         paper.FreezeBody();
         sprite.sprite = _cpc.GetTime() < 600f ? winSprite : loseSprite;
         sprite.enabled = true;
