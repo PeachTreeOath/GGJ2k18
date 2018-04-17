@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4793841855556934}
   - component: {fileID: 120518308086175536}
   - component: {fileID: 114322131733233418}
+  - component: {fileID: 114612066763771532}
   m_Layer: 8
   m_Name: papermate
   m_TagString: Untagged
@@ -125,6 +126,18 @@ MonoBehaviour:
   labelOffset: 0.5
   standardTextColor: {r: 1, g: 1, b: 1, a: 1}
   pressedTextColor: {r: 1, g: 0.6, b: 0, a: 1}
+--- !u!114 &114612066763771532
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1668908429114278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aacbbfac8d64c147bf6c376feb08cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  filename: 
 --- !u!120 &120518308086175536
 LineRenderer:
   m_ObjectHideFlags: 1
