@@ -70,6 +70,14 @@ public class PapermateBodyNew : MonoBehaviour
     private bool isStabilized = false;
     private bool isStunned = false;
 
+    public bool isLeftActive {
+        get { return leftSprite.sprite == leftSpriteOn; }
+    }
+
+    public bool isRightActive {
+        get { return rightSprite.sprite == rightSpriteOn;  }
+    }
+
     // Use this for initialization
     private void Start()
     {
