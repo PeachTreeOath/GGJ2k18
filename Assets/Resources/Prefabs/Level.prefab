@@ -5648,7 +5648,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1639998502420608}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 08bdca51e31aa5f44bd23c9ee7de8efb, type: 2}
+  m_Material: {fileID: 6200000, guid: b191ec8b420961e40a1b258bdfd93353, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -6098,7 +6098,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1864169322267830}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 08bdca51e31aa5f44bd23c9ee7de8efb, type: 2}
+  m_Material: {fileID: 6200000, guid: b191ec8b420961e40a1b258bdfd93353, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -6323,7 +6323,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1042268681047332}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 08bdca51e31aa5f44bd23c9ee7de8efb, type: 2}
+  m_Material: {fileID: 6200000, guid: b191ec8b420961e40a1b258bdfd93353, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -6508,7 +6508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: {x: 0, y: 1}
-  windSpeed: 18
+  windSpeed: 50
 --- !u!114 &114296586476916858
 MonoBehaviour:
   m_ObjectHideFlags: 1
