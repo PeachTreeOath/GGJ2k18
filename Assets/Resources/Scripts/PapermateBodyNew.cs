@@ -17,6 +17,7 @@ public class PapermateBodyNew : MonoBehaviour
     public float airPower = 2000;
     public float upwardLift = 10f;
     public float glideVelocityMax = 4f;
+    public float maxStretch;
     public float stunDuration;
 
     public SpriteRenderer leftSprite;
@@ -313,6 +314,18 @@ public class PapermateBodyNew : MonoBehaviour
         //    leftBody.AddForce(upLift);
         //   rightBody.AddForce(upLift);
         //}
+
+        float totalJointDif = 0f;
+        for (int i = 1; i < _joints.Count(); i++)
+        {
+            Vector3 jointDif = _joints[i].transform.position - _joints[i - 1].transform.position;
+            totalJointDif += jointDif.magnitude;
+        }
+        //Debug.Log("totalJointDif: " + totalJointDif);
+        if (!isStunned && totalJointDif > maxStretch)
+        {
+            StartCoroutine(StunnedState());
+        }
     }
 
     private void LateUpdate()
