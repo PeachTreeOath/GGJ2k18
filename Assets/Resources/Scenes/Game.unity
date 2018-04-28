@@ -155,7 +155,7 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d3d68bd1618d4c44886be75e9851b4dc, type: 2}
   m_IsPrefabParent: 0
---- !u!1001 &162683481
+--- !u!1001 &98412952
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -197,6 +197,21 @@ Prefab:
     - target: {fileID: 1870177276778956, guid: 0cfa9d7e5967b8c4395672390a9168fe, type: 2}
       propertyPath: m_Name
       value: LevelPlatformerHell
+      objectReference: {fileID: 0}
+    - target: {fileID: 212694566787248738, guid: 0cfa9d7e5967b8c4395672390a9168fe,
+        type: 2}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212197728347333042, guid: 0cfa9d7e5967b8c4395672390a9168fe,
+        type: 2}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212449797900872082, guid: 0cfa9d7e5967b8c4395672390a9168fe,
+        type: 2}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0cfa9d7e5967b8c4395672390a9168fe, type: 2}
