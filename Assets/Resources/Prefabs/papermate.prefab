@@ -120,7 +120,8 @@ MonoBehaviour:
   airPower: 2000
   upwardLift: 10
   glideVelocityMax: 4
-  stunDuration: 0
+  maxStretch: 10
+  stunDuration: 0.5
   leftSprite: {fileID: 212418136826127928}
   rightSprite: {fileID: 212444054012255360}
   labelOffset: 0.5
@@ -137,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aacbbfac8d64c147bf6c376feb08cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  filename: 
+  filename: ghost2
 --- !u!120 &120518308086175536
 LineRenderer:
   m_ObjectHideFlags: 1
